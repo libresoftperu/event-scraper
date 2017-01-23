@@ -1,0 +1,33 @@
+#popupCnt { width:520px;  }
+.formfield { width:220px; margin-bottom:8px; float:left; clear:left;   }
+.formfield > label { display:block; color:#fff; width:120px; padding:0; padding-left:6px; margin:0;
+font-family:sans-serif; font-size:9px;
+border:1px solid black; background-color:#777; border-radius:6px 6px 0 0; }
+.formfield > input { display:block; font-size:10px; width:220px; margin:0; margin-top:-1px;
+ padding:4px; border:1px solid black; }
+
+#componentbar { width:280px; float:right;}
+.component {  width:260px; margin-bottom:8px;  font-family:sans-serif; border:1px solid; border-radius:8px; padding-right:0; }
+.component > legend { border:1px solid #000; color:#fff; background-color:#777; border-radius:8px; font-size:11px; padding:0 12px 0 12px; }
+.component > div { max-height:180px; overflow-y:scroll; }
+.component > div::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+.component > div::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+.component > div::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+.component > div > div > hr { clear:left; }
+.component > div > div > .formfield { margin:0; }
+.component > div > div > .formfield:first-child > input { color:blue; }
+.component > div > div > .formfield > label { display:none; }
+.component > div > div > .formfield > input { border:none; margin:0; padding:0; width:240px;  }
+
+
+input[type="submit"] { float:left; clear:both; font-size:18px; border-radius:4px; cursor:pointer; margin-bottom:12px; width:220px;}

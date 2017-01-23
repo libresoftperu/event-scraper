@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>Soundex Test / Double Metaphone Test</title>
+<script src="../soundex.js"></script>
+<script src="../doublemetaphone.js"></script>
+<script src="../doublemetaphone2.js"></script>
+<script id="main.js">
+
+var form;
+var preview;
+
+function logEntry(hash) {
+	for (var lbl in hash) {
+		var label = document.createElement("label");
+		label.innerHTML = lbl;
+		label.style.marginRight="6px";
+
+		var span_soundex = document.createElement("span");
+		span_soundex.innerHTML = hash[lbl].sndx;
+		span_soundex.style.backgroundColor = "rgba(200,0,0,0.25)";
+		span_soundex.style.marginRight="6px";
+
+		var span_dmeta = document.createElement("span");
+		span_dmeta.innerHTML = hash[lbl].dmet;
+		span_dmeta.style.backgroundColor = "rgba(0,200,0,0.25)";
+		span_dmeta.style.marginRight="6px";
+
+		var span_dmeta2 = document.createElement("span");
+		span_dmeta2.innerHTML = hash[lbl].dmet2;
+		span_dmeta2.style.backgroundColor = "rgba(0,0,200,0.25)";
+
+		var div = document.createElement("div");
+		div.appendChild(label);
+		div.appendChild(span_soundex);
+		div.appendChild(span_dmeta);
+		div.appendChild(span_dmeta2);
+		preview.appendChild(div);
+	}
+}
+
+function onsubmitform (e) {
+	e.preventDefault();
+	var inputStr = this.string.value; //.replace(/[^\w\s]/gi,'');
+	var inputs = this.string.value.split(" ");
+	// calculate soundex/dmeta on every 'word'
+	var soundexs = [];
+	var dmetas = [];
+	var dmeta2s = [];
+	for (var i = 0; i < inputs.length; i++) {
+		soundexs.push(soundex(inputs[i]));
+		dmetas.push(dmeta.encode(inputs[i])[0]);
+		dmeta2s.push(window.encoder.doubleMetaphone(inputs[i]).primary);
+	}
+	var logentry = {};
+	logentry[inputStr] = { sndx:soundexs.join(" "), dmet:dmetas.join(" "), dmet2:dmeta2s.join(" ") };
+	logEntry(logentry);
+	return false;
+}
+
+function main () {
+	form = document.getElementById("test");
+	preview = document.getElementById("preview");
+	form.onsubmit = onsubmitform;
+}
+
+</script>
+
+</head>
+
+<body onload="main();" style="margin:0; padding:0;">
+
+<h1 style="border-bottom:1px solid">Soundex Tests</h1>
+
+<form id="test" style="float:left;width:45%;">
+	<input name="string" required="true" placeholder="type your word/phrase" />
+	<input type="submit" />
+</form>
+
+<fieldset id="preview" style="width:50%; float:left;">
+	<legend>Preview</legend>
+	<div></div>
+</fieldset>
+
+</body>
+
+</html>
