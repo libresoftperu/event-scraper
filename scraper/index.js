@@ -80,12 +80,12 @@ scraper.getProfileType = function () {
 
 
 /**
-	* getRoutedScraper -Get the routes that are going to scrapping
+	* getRoutedScraper -Get the routes that are going to scraping
 	*
 	* @param  {object} routes scraperMap
 	* @return {object}        description
 	*/
-scraper.getRoutedScraper = function ( routes ) {
+scraper.getRoutedScraper = function _getRoutedScraper( routes ) {
 	for (var route in routes) {
 		if (window.location.pathname.match(route)) {
 			if (typeof routes[route] == 'string') {

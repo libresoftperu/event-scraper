@@ -4,35 +4,86 @@ scraperPop.controlbutton = null;
 
 scraperPop.results = null;
 
+/**
+ * CUSMTOM TITLE FOR ERRORS
+ */
 scraperPop.CUSTOM_TITLE = 'Aviso';
 
+/**
+ *  CUSTOM MESSAGE FOR ERRORS
+ */
 scraperPop.CUSTOM_MESSAGE = 'Hubo un problema con la extension';
 
 
 /**
- * buildCustomTextField - Build the custom text field with the custom css class
+ * buildLabelTextField - Build label for a texxtfield
  *
- * @param  {string} class Any addionatil css class
- * @return {input}       input
+ * @param  {string} title description
+ * @param  {string} forE  description
+ * @param  {string} clss  description
+ * @return {type}       description
  */
-scraperPop.buildCustomTextField = function ( aclass, type, id, name ) {
+scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, clss ) {
 
-	var _class = 'mdl-textfield__input' + aclass?(' ' + aclass):'';
-	var _type = type || 'text'
-	var input = document.createElement(input);
+	if ( !forE ) {
+		throw new Error('Missing parameter "forE" for label');
+	}
+
+	if ( !title ) {
+		throw new Error('Missing parameter "title" for label');
+	}
+
+	var label = document.createElement('label');
+	label.setAttribute('class', 'mdl-textfield__label');
+	label.setAttribute('for', forE);
+	var text = document.createTextNode(title);
+	label.appendChild(text);
+	return label;
+};
+
+/**
+ * buildTextField - Build a input field base
+ *
+ * @param  {string}  clss       Any addionatl CSS clases
+ * @param  {string}  type       Input Type [text, number, email ... etc]
+ * @param  {string}  id         Input ID
+ * @param  {string}  name       Input name
+ * @param  {boolean} container  Div container Flag
+ * @return {type}               Input object
+ */
+scraperPop.buildTextField = function _buildTextField( clss, type, id, name, container, label, labelTitle ) {
+
+	var _class = 'mdl-textfield__input';
+	var _type = type || 'text';
+	var input = document.createElement('input');
+	var _container = container || true;
+	var container = null;
 	input.setAttribute('class', _class);
 	input.setAttribute('type', _type);
 	id && input.setAttribute('id', id);
-	name && input.setAttribute('name', _name);
-	return input;
+	name && input.setAttribute('name', name);
+
+	if ( _container ) {
+		container = this.buildTextFieldContainer();
+		container.appendChild(input);
+		if ( label ) {
+			var label = this.buildLabelTextField(labelTitle, name, null);
+			container.appendChild(label);
+		}
+
+	} else {
+		container = input;
+	}
+
+	return container;
 }
 
 /**
- * buildCustomTextFieldContainer - Build the div container for the text inputs
+ * buildTextFieldContainer - Build the div container for the text inputs
  *
  * @return {div}  Div
  */
-scraperPop.buildCustomTextFieldContainer = function ( ) {
+scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction ( ) {
 	var div = document.createElement('div');
 	div.setAttribute('class', 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label');
 	return div;
@@ -43,7 +94,7 @@ scraperPop.buildCustomTextFieldContainer = function ( ) {
 	* @param	{string} title Custom title on the box
 	* @param	{string} msg Custom message on the box
 	*/
-scraperPop.buildMessage = function ( title, msg, type ) {
+scraperPop.buildMessage = function _buildMessage( title, msg, type ) {
 	var _type = null;
 	var arrTypes = [
 		'info',
@@ -84,7 +135,7 @@ scraperPop.buildMessage = function ( title, msg, type ) {
  *
  * @return {array}	[mainDiv, main, grid]
  */
-scraper.buildMainContainer = function () {
+scraperPop.buildMainContainer = function () {
 
 	// Create main div
 	var mainDiv = document.createElement('div');
@@ -106,39 +157,45 @@ scraper.buildMainContainer = function () {
  *
  * @return {dom}	<table>
  */
-scraperPop.buildHeaderTable = function ( ) {
-	var table = document.createElement("table");
-	table.setAttribute('width', '100%');
+scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
+	var mainDiv = document.createElement('div');
+	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
 
-	var tbody = document.createElement("tbody");
-
-	var row = document.createElement("tr");
-
-	var col1 = document.createElement("td");
+	//logo
 	var logo = document.createElement("img");
 	var path = chrome.extension.getURL('../icons/icon48.png')
 	logo.setAttribute('src', path);
 	logo.setAttribute('alt', "Q'chevere Logo");
 	logo.setAttribute('title', "Q'chevere");
 	logo.setAttribute('border', '0');
-	col1.appendChild(logo);
 
-	var col2 = document.createElement("td");
-	col2.setAttribute('align', 'center');
+	//Title
 	var strongTitle = document.createElement("strong");
 	strongTitle.setAttribute('style', "font-size:18px; color:white;");
 	var textnode = document.createTextNode("Q'chevere");
 	strongTitle.appendChild(textnode);
-	col2.appendChild(strongTitle);
 
-	row.appendChild(col1);
-	row.appendChild(col2);
+	//profile
+	var strongProfile = document.createElement("a");
+	strongProfile.setAttribute('href', '#');
+	strongProfile.setAttribute('class', 'settings-link');
+	strongProfile.setAttribute('title', 'Usuario');
+	var logoProfile = document.createElement("img");
+	var path = chrome.extension.getURL('../icons/ic_perm_identity_white_24px.svg');
+	logoProfile.setAttribute('src', path);
+	logoProfile.setAttribute('border', '0');
 
-	tbody.appendChild(row);
+	var textName = document.createTextNode('jegj');
 
-	table.appendChild(tbody);
+	strongProfile.appendChild(logoProfile);
+	strongProfile.appendChild(textName);
 
-	return table;
+	//
+	mainDiv.appendChild(logo);
+	mainDiv.appendChild(strongTitle);
+	mainDiv.appendChild(strongProfile);
+
+	return mainDiv;
 }
 
 
@@ -148,11 +205,34 @@ scraperPop.buildHeaderTable = function ( ) {
  * @param	{objects} scraper All the data from the web page
  * @return {form}						 Form base on the fields
  */
-scraperPop.getFormBaseScraperResults = function ( scraper ){
+scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scraper ){
 	var form = document.createElement('form');
 	form.setAttribute('action', '#');
+	form.setAttribute('class', 'add-event-form');
 
-	var div = this.buildCustomTextFieldContainer();
+	// class - type - id - name - flagcontainer - flaglabel, labeltitle
+	var field = this.buildTextField('', 'text', 'name', 'name', true, true, 'Nombre');
+	form.appendChild(field);
+
+	// Submit Button
+	var separator = document.createElement('p');
+	var submitButton = document.createElement('button');
+	submitButton.setAttribute(
+		'class',
+		'add-event-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--cyan-500 mdl-color-text--white'
+	);
+	var submitImage = document.createElement('img');
+	submitImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+
+	var text = document.createTextNode('Agregar Evento');
+
+	submitButton.appendChild(submitImage);
+	submitButton.appendChild(text);
+
+	form.appendChild(separator);
+	form.appendChild(submitButton);
+
+	return form;
 
 }
 
@@ -172,13 +252,13 @@ scraperPop.buildSccrapperPageForm = function( scraper ) {
 	var grid = arrContainers[2];
 
 	//Create Table
-	var table = this.buildHeaderTable();
+	var header = this.buildHeaderTable();
 
 	//Create form
 	var form = this.getFormBaseScraperResults(scraper);
 
-	grid.appendChild(table);
-
+	grid.appendChild(header);
+	grid.appendChild(form);
 	main.appendChild(grid);
 	mainDiv.appendChild(main);
 	document.body.appendChild(mainDiv);
@@ -214,16 +294,14 @@ scraperPop.buildErrorPageScrapper = function(	) {
 	* window|addEventListener - Event when the DOM	is ready for manipulation
 	*/
 window.addEventListener('DOMContentLoaded', function() {
-
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
 			if ( res && res.showForm ) {
 				console.log('Resultado --->', res.results.scraper);
-				// console.log('--->', eventSchema);
 				scraperPop.buildSccrapperPageForm(res.results.scraper);
 			} else {
 				scraperPop.buildErrorPageScrapper();
 			}
+		});
 	});
-
 });

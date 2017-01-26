@@ -9,18 +9,43 @@
 	font-size: 11px;
 	font-family: Verdana;
 	background-color:#687dc1;
-	min-height: 180px;
+	min-height: 240px;
 }
 
 .add-event-page {
-	min-width:320px;
+	min-width:500px;
 	min-height:420px;
 	background-color:#687dc1;
+}
+
+.no-left-right-margin{
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.settings-link{
+	float:right;
+	margin-top:15px;
+	color:white;
+	font-size: 16px;
 }
 
 /*
 	mdl
 */
+
+main.mdl-layout__content {
+	width: 100%;
+}
+
+.add-event-form {
+	width: 100%;
+}
+
+.add-event-form > div.mdl-textfield{
+	width: 100%
+}
+
 div .mdl-textfield__label:after {
 	background: #f3e6f7;
 }
