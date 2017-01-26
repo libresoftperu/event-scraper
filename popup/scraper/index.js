@@ -63,7 +63,7 @@ scraperPop.buildTextField = function _buildTextField( clss, type, id, name, cont
 	id && input.setAttribute('id', id);
 	name && input.setAttribute('name', name);
 
-	if ( _container ) {
+	if ( _container && _type != 'hidden') {
 		container = this.buildTextFieldContainer();
 		container.appendChild(input);
 		if ( label ) {
@@ -157,7 +157,7 @@ scraperPop.buildMainContainer = function () {
  *
  * @return {dom}	<table>
  */
-scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
+scraperPop.buildHeaderTable = function _buildHeaderTable( user ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
 
@@ -175,25 +175,29 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
 	var textnode = document.createTextNode("Q'chevere");
 	strongTitle.appendChild(textnode);
 
-	//profile
-	var strongProfile = document.createElement("a");
-	strongProfile.setAttribute('href', '#');
-	strongProfile.setAttribute('class', 'settings-link');
-	strongProfile.setAttribute('title', 'Usuario');
-	var logoProfile = document.createElement("img");
-	var path = chrome.extension.getURL('../icons/ic_perm_identity_white_24px.svg');
-	logoProfile.setAttribute('src', path);
-	logoProfile.setAttribute('border', '0');
-
-	var textName = document.createTextNode('jegj');
-
-	strongProfile.appendChild(logoProfile);
-	strongProfile.appendChild(textName);
-
-	//
 	mainDiv.appendChild(logo);
 	mainDiv.appendChild(strongTitle);
-	mainDiv.appendChild(strongProfile);
+
+	if ( user ) {
+		//profile
+		var strongProfile = document.createElement("a");
+		strongProfile.setAttribute('href', '#');
+		strongProfile.setAttribute('class', 'settings-link');
+		strongProfile.setAttribute('title', 'Usuario');
+		var logoProfile = document.createElement("img");
+		var path = chrome.extension.getURL('../icons/ic_perm_identity_white_24px.svg');
+		logoProfile.setAttribute('src', path);
+		logoProfile.setAttribute('border', '0');
+
+		var textName = document.createTextNode('jegj');
+
+		strongProfile.appendChild(logoProfile);
+		strongProfile.appendChild(textName);
+
+		//
+
+		mainDiv.appendChild(strongProfile);
+	}
 
 	return mainDiv;
 }
@@ -210,9 +214,28 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	form.setAttribute('action', '#');
 	form.setAttribute('class', 'add-event-form');
 
-	// class - type - id - name - flagcontainer - flaglabel, labeltitle
-	var field = this.buildTextField('', 'text', 'name', 'name', true, true, 'Nombre');
-	form.appendChild(field);
+	console.log('---->', scraper);
+
+	var eventProperties = eventSchema.properties;
+
+	var eventShowProperties = eventSchema.show;
+
+	var propKeys = Object.keys(eventProperties);
+
+	for (var i = 0; i < propKeys.length; i++) {
+		var prop = eventProperties[propKeys[i]];
+		// class - type - id - name - flagcontainer - flaglabel, labeltitle
+		var field = this.buildTextField(
+			null,
+			prop.type,
+			prop.id,
+			prop.name,
+			true,
+			true,
+			prop.label
+		);
+		form.appendChild(field);
+	}
 
 	// Submit Button
 	var separator = document.createElement('p');
@@ -251,8 +274,11 @@ scraperPop.buildSccrapperPageForm = function( scraper ) {
 	var main = arrContainers[1];
 	var grid = arrContainers[2];
 
+	//TODO GET USER
+	var user = true;
+
 	//Create Table
-	var header = this.buildHeaderTable();
+	var header = this.buildHeaderTable( user );
 
 	//Create form
 	var form = this.getFormBaseScraperResults(scraper);

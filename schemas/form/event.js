@@ -2,7 +2,7 @@ var eventSchema = {
 	"title": "Event Form",
 	"type": "object",
 	"properties": {
-		"eid": { label:"event id" , id:"eid", name: "eid", type: "text"},
+		"eid": { label:"event id" , id:"eid", name: "eid", type: "hidden"},
 		"pub": { label:"publish stamp", id:"pub", name: "pub"},
 		"lct": { label:"location", id:"lct", name: "lct", type: "text"},
 		"cty": { label:"city", id:"cty", name: "cty", type: "text"},
@@ -15,7 +15,7 @@ var eventSchema = {
 		"tit": { label:"title", id:"tit", name: "tit", type: "text"},
 		"sht": { label:"short description" , id:"sht", name: "sht", type: "text"},
 		"lng": { label:"long description" , id:"lng", name: "lng", type: "textarea"},
-		"img": { label:"image", id: "img", name: "img", type: "image"},
+		"img": { label:"image", id: "img", name: "img", type: "text"},
 		"prc": { label:"price (from)", id:"prc", name: "prc", type: "number"},
 		"cre": { label:"created stamp", id:"cre", name: "cre", type: "text"},
 		"crb": { label:"created by", id:"crb", name: "crb", type: "text" },

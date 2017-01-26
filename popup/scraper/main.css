@@ -42,6 +42,10 @@ main.mdl-layout__content {
 	width: 100%;
 }
 
+.mdl-layout__container {
+	overflow-y: auto;
+}
+
 .add-event-form > div.mdl-textfield{
 	width: 100%
 }
