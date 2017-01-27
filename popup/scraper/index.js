@@ -18,7 +18,13 @@ scraperPop.CUSTOM_MESSAGE = 'Hubo un problema con la extension';
 /**
  * TABS TITLES
  */
-scraperPop.TABSTITLE = ['General', 'Detalle', 'Ubi'];
+scraperPop.TABSTITLE = ['General', 'Adicional', 'Ubi'];
+
+
+/**
+ * Default CSS class for field containers
+ */
+scraperPop.DEFAULT_CSS_CLASS_FIELD_CTN = 'full_space_fields';
 
 
 /**
@@ -50,19 +56,19 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 /**
  * buildTextField - Build a input field base
  *
- * @param  {string}  clss       Any addionatl CSS clases
+ * @param  {string}  clss       Any addionatl CSS clases container
  * @param  {string}  type       Input Type [text, number, email ... etc]
  * @param  {string}  id         Input ID
  * @param  {string}  name       Input name
- * @param  {boolean} container  Div container Flag
+ * @param  {boolean} containerFlag  Div container Flag
  * @return {type}               Input object
  */
-scraperPop.buildTextField = function _buildTextField( clss, type, id, name, container, label, labelTitle ) {
+scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls ) {
 
 	var _class = 'mdl-textfield__input';
 	var _type = type || 'text';
 	var input = document.createElement('input');
-	var _container = container || true;
+	var _container = containerFlag || true;
 	var container = null;
 	input.setAttribute('class', _class);
 	input.setAttribute('type', _type);
@@ -70,13 +76,12 @@ scraperPop.buildTextField = function _buildTextField( clss, type, id, name, cont
 	name && input.setAttribute('name', name);
 
 	if ( _container && _type != 'hidden') {
-		container = this.buildTextFieldContainer();
+		container = this.buildTextFieldContainer(ctnCssCls);
 		container.appendChild(input);
-		if ( label ) {
+		if ( labelFlag ) {
 			var label = this.buildLabelTextField(labelTitle, name, null);
 			container.appendChild(label);
 		}
-
 	} else {
 		container = input;
 	}
@@ -84,14 +89,17 @@ scraperPop.buildTextField = function _buildTextField( clss, type, id, name, cont
 	return container;
 }
 
-/**
- * buildTextFieldContainer - Build the div container for the text inputs
- *
- * @return {div}  Div
- */
-scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction ( ) {
+ /**
+  * _buildTextFieldContainerfunction - Build the div container for the text inputs
+  *
+  * @param  {string} ctnCssCls description
+  * @return {div}           Div Container
+  */
+scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction ( ctnCssCls ) {
 	var div = document.createElement('div');
-	div.setAttribute('class', 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label');
+	var _ctnCssCls = ctnCssCls || this.DEFAULT_CSS_CLASS_FIELD_CTN;
+	var _class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label ' + _ctnCssCls;
+	div.setAttribute('class', _class);
 	return div;
 }
 
@@ -239,32 +247,33 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	var separator = document.createElement('p');
 	tabsDiv.appendChild(separator);
 
-	for (var i = 0; i < tabsCount; i++) {
+	for (var ii = 0; ii < tabsCount; ii++) {
 		// <div class="mdl-tabs__panel is-active" id="tab1-panel">
-		var _class = 'mdl-tabs__panel' + (i == 0?' is-active':'');
+		var _class = 'mdl-tabs__panel' + (ii == 0?' is-active':'');
 		var tabContentContainer = document.createElement('div');
 		tabContentContainer.setAttribute('class', _class);
-		tabContentContainer.setAttribute('id', 'tab' + (i+1) + '-panel');
+		tabContentContainer.setAttribute('id', 'tab' + (ii+1) + '-panel');
 
 		var form = document.createElement('form');
 		form.setAttribute('action', '#');
 		form.setAttribute('class', 'add-event-form');
 
-		var eventProperties = eventSchema.properties["tab" + (i+1)];
+		var eventProperties = eventSchema.properties["tab" + (ii+1)];
+		console.log(eventProperties);
 
 		var propKeys = Object.keys(eventProperties);
 
 		for (var j = 0; j < propKeys.length; j++) {
 			var prop = eventProperties[propKeys[j]];
-			// class - type - id - name - flagcontainer - flaglabel, labeltitle
+			// type - id - name - flagcontainer - flaglabel, labeltitle
 			var field = this.buildTextField(
-				null,
 				prop.type,
 				prop.id,
 				prop.name,
 				true,
 				true,
-				prop.label
+				prop.label,
+				prop.cls
 			);
 			form.appendChild(field);
 		}
@@ -273,37 +282,22 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	}
 
 	tabMainContainer.appendChild(tabsDiv);
+
+	var submitButton = document.createElement('button');
+	submitButton.setAttribute(
+		'class',
+		'full_space_fields mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--cyan-500 mdl-color-text--white'
+	);
+	var submitImage = document.createElement('img');
+	submitImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+
+	var text = document.createTextNode('Agregar Evento');
+	submitButton.appendChild(submitImage);
+	submitButton.appendChild(text);
+
+	tabMainContainer.appendChild(submitButton);
 	tabDivContainer.appendChild(tabMainContainer);
 	return tabDivContainer
-
-
-	// var form = document.createElement('form');
-	// form.setAttribute('action', '#');
-	// form.setAttribute('class', 'add-event-form');
-
-	// console.log('---->', scraper);
-
-
-	// Submit Button
-	// var separator = document.createElement('p');
-	// var submitButton = document.createElement('button');
-	// submitButton.setAttribute(
-	// 	'class',
-	// 	'add-event-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--cyan-500 mdl-color-text--white'
-	// );
-	// var submitImage = document.createElement('img');
-	// submitImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
-	//
-	// var text = document.createTextNode('Agregar Evento');
-	//
-	// submitButton.appendChild(submitImage);
-	// submitButton.appendChild(text);
-	//
-	// form.appendChild(separator);
-	// form.appendChild(submitButton);
-	//
-	// return form;
-
 }
 
 /**
@@ -331,32 +325,6 @@ scraperPop.buildSccrapperPageForm = function( scraper ) {
 }
 
 /**
-
-	* buildErrorPage - Build the error page
-	*/
-scraperPop.buildErrorPageScrapper = function(	) {
-
-	// Add custom css class to error page
-	document.body.className = "errorpage";
-
-	//Create Separator
-	var separator = document.createElement("p");
-
-	//Create Table
-	var table = this.buildHeaderTable();
-
-	var messageBox = this.buildMessage(
-		'Oops',
-		'Solo podemos extraer informacion de los eventos de: Facebook, MeetUp y EventBride',
-		'warning'
-	)
-
-	document.body.appendChild(table);
-	document.body.appendChild(separator);
-	document.body.appendChild(messageBox);
-}
-
-/**
 	* window|addEventListener - Event when the DOM	is ready for manipulation
 	*/
 window.addEventListener('DOMContentLoaded', function() {
@@ -367,7 +335,6 @@ window.addEventListener('DOMContentLoaded', function() {
 				scraperPop.buildSccrapperPageForm(res.results.scraper);
 			} else {
 				scraperPop.buildSccrapperPageForm();
-				// scraperPop.buildErrorPageScrapper();
 			}
 		});
 	});

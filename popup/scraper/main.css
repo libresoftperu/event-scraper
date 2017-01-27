@@ -3,7 +3,7 @@
 */
 body{
 	width: 400px;
-	height: 400px;
+	height: 580px;
 	background-color:#687dc1;
 }
 
@@ -37,12 +37,18 @@ main.mdl-layout__content {
 	width: 100%;
 }
 
-.add-event-form {
+.full_space_fields {
 	width: 100%;
 }
 
-.add-event-form > div.mdl-textfield{
-	width: 100%
+.shared_space_fields_right{
+	width: 45%;
+	margin-left: 5%;
+}
+
+.shared_space_fields_left{
+	width: 45%;
+	margin-right: 5%;
 }
 
 div .mdl-textfield__label:after {
