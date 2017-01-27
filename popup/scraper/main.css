@@ -3,7 +3,7 @@
 */
 body{
 	width: 400px;
-	height: 580px;
+	height: 600px;
 	background-color:#687dc1;
 }
 
@@ -64,6 +64,11 @@ div.mdl-textfield--floating-label{
 }
 
 input.mdl-textfield__input{
+	border-bottom: 1px solid white;
+	color: #f3e6f7;
+}
+
+textarea.mdl-textfield__input{
 	border-bottom: 1px solid white;
 	color: #f3e6f7;
 }

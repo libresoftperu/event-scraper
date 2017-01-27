@@ -56,24 +56,41 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 /**
  * buildTextField - Build a input field base
  *
- * @param  {string}  clss       Any addionatl CSS clases container
  * @param  {string}  type       Input Type [text, number, email ... etc]
  * @param  {string}  id         Input ID
  * @param  {string}  name       Input name
  * @param  {boolean} containerFlag  Div container Flag
+ * @param  {string}  clss       Any addionatl CSS clases container
+ * @param  {string}  value      Input value
  * @return {type}               Input object
  */
-scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls ) {
+scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value ) {
 
 	var _class = 'mdl-textfield__input';
 	var _type = type || 'text';
-	var input = document.createElement('input');
+	var input = null;
 	var _container = containerFlag || true;
 	var container = null;
+	if ( _type == 'textarea' ) {
+		var input = document.createElement('textarea');
+		input.setAttribute('type', 'text');
+		input.setAttribute('rows', '3');
+		if ( value ){
+			var value = document.createTextNode(value);
+			input.appendChild(value);
+		}
+	} else {
+		var input = document.createElement('input');
+		input.setAttribute('type', _type);
+		value && input.setAttribute('value', value);
+	}
 	input.setAttribute('class', _class);
-	input.setAttribute('type', _type);
 	id && input.setAttribute('id', id);
 	name && input.setAttribute('name', name);
+
+	if (_type == 'date' || _type == 'time'){
+		labelFlag = false;
+	}
 
 	if ( _container && _type != 'hidden') {
 		container = this.buildTextFieldContainer(ctnCssCls);
@@ -246,7 +263,6 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	tabsDiv.appendChild(tabsHeader);
 	var separator = document.createElement('p');
 	tabsDiv.appendChild(separator);
-
 	for (var ii = 0; ii < tabsCount; ii++) {
 		// <div class="mdl-tabs__panel is-active" id="tab1-panel">
 		var _class = 'mdl-tabs__panel' + (ii == 0?' is-active':'');
@@ -259,8 +275,6 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		form.setAttribute('class', 'add-event-form');
 
 		var eventProperties = eventSchema.properties["tab" + (ii+1)];
-		console.log(eventProperties);
-
 		var propKeys = Object.keys(eventProperties);
 
 		for (var j = 0; j < propKeys.length; j++) {
@@ -273,7 +287,8 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 				true,
 				true,
 				prop.label,
-				prop.cls
+				prop.cls,
+				scraper.patch.items[propKeys[j]]
 			);
 			form.appendChild(field);
 		}
