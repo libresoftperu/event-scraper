@@ -1,20 +1,9 @@
 /*
 	body ccs classes
 */
-.errorpage {
-	min-width:220px;
-	overflow-x:hidden;
-	padding: 0;
-	margin: 0;
-	font-size: 11px;
-	font-family: Verdana;
-	background-color:#687dc1;
-	min-height: 240px;
-}
-
-.add-event-page {
-	min-width:500px;
-	min-height:420px;
+body{
+	width: 400px;
+	height: 400px;
 	background-color:#687dc1;
 }
 
@@ -23,11 +12,21 @@
 	margin-right: 0px;
 }
 
-.settings-link{
-	float:right;
-	margin-top:15px;
+
+.mdl-tabs__tab{
 	color:white;
-	font-size: 16px;
+}
+
+.mdl-tabs.is-upgraded .mdl-tabs__tab.is-active {
+	color: #f3e6f7;
+}
+
+.mdl-tabs__panel{
+	color: white;
+}
+
+.mdl-tabs.is-upgraded .mdl-tabs__tab.is-active:after{
+	background: #f3e6f7;
 }
 
 /*
@@ -40,10 +39,6 @@ main.mdl-layout__content {
 
 .add-event-form {
 	width: 100%;
-}
-
-.mdl-layout__container {
-	overflow-y: auto;
 }
 
 .add-event-form > div.mdl-textfield{
@@ -69,63 +64,4 @@ input.mdl-textfield__input{
 
 .mdl-textfield--floating-label.is-focused .mdl-textfield__label, .mdl-textfield--floating-label.is-dirty .mdl-textfield__label, .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label{
 	color: #f3e6f7;
-}
-.add-event-button{
-	width: 100%
-}
-/*
-	message ccs classes
-*/
-.message{
-	width:90%;
-	background-size: 40px 40px;
-	background-image: linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-											transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-											transparent 75%, transparent);
-	 box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
-	 border: 1px solid;
-	 color: #fff;
-	 padding: 15px;
-	 position: fixed;
-	 _position: absolute;
-	 text-shadow: 0 1px 0 rgba(0,0,0,.5);
-	 animation: animate-bg 5s linear infinite;
-}
-
-.info{
-	background-color: #4ea5cd;
-	border-color: #3b8eb5;
-}
-
-.error{
-	background-color: #de4343;
-	border-color: #c43d3d;
-}
-
-.warning{
-	background-color: #eaaf51;
-	border-color: #d99a36;
-}
-
-.success{
-	background-color: #61b832;
-	border-color: #55a12c;
-}
-
-.message h3{
-	margin: 0 0 5px 0;
-
-}
-
-.message p{
-	margin: 0;
-}
-
-@keyframes animate-bg {
-	from {
-		background-position: 0 0;
-	}
-	to {
-		background-position: -80px 0;
-	}
 }

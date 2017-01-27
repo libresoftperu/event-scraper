@@ -16,6 +16,12 @@ scraperPop.CUSTOM_MESSAGE = 'Hubo un problema con la extension';
 
 
 /**
+ * TABS TITLES
+ */
+scraperPop.TABSTITLE = ['General', 'Detalle', 'Ubi'];
+
+
+/**
  * buildLabelTextField - Build label for a texxtfield
  *
  * @param  {string} title description
@@ -157,7 +163,7 @@ scraperPop.buildMainContainer = function () {
  *
  * @return {dom}	<table>
  */
-scraperPop.buildHeaderTable = function _buildHeaderTable( user ) {
+scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
 
@@ -175,29 +181,18 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( user ) {
 	var textnode = document.createTextNode("Q'chevere");
 	strongTitle.appendChild(textnode);
 
+	//Action Title
+	var strongActionTitle = document.createElement("strong");
+	strongActionTitle.setAttribute('style', "margin-top:15px;font-size:14px; color:white; float:right");
+	var textnode = document.createTextNode("Evento Nuevo");
+	var eventImage = document.createElement('img');
+	eventImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+	strongActionTitle.appendChild(eventImage);
+	strongActionTitle.appendChild(textnode);
+
 	mainDiv.appendChild(logo);
 	mainDiv.appendChild(strongTitle);
-
-	if ( user ) {
-		//profile
-		var strongProfile = document.createElement("a");
-		strongProfile.setAttribute('href', '#');
-		strongProfile.setAttribute('class', 'settings-link');
-		strongProfile.setAttribute('title', 'Usuario');
-		var logoProfile = document.createElement("img");
-		var path = chrome.extension.getURL('../icons/ic_perm_identity_white_24px.svg');
-		logoProfile.setAttribute('src', path);
-		logoProfile.setAttribute('border', '0');
-
-		var textName = document.createTextNode('jegj');
-
-		strongProfile.appendChild(logoProfile);
-		strongProfile.appendChild(textName);
-
-		//
-
-		mainDiv.appendChild(strongProfile);
-	}
+	mainDiv.appendChild(strongActionTitle);
 
 	return mainDiv;
 }
@@ -210,52 +205,104 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( user ) {
  * @return {form}						 Form base on the fields
  */
 scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scraper ){
-	var form = document.createElement('form');
-	form.setAttribute('action', '#');
-	form.setAttribute('class', 'add-event-form');
+	var tabsCount = this.TABSTITLE.length;
 
-	console.log('---->', scraper);
+	//div container
+	var tabDivContainer = document.createElement('div');
+	tabDivContainer.setAttribute('class', 'mdl-cell mdl-cell--12-col');
+	tabDivContainer.setAttribute('style', 'width:100%;');
 
-	var eventProperties = eventSchema.properties;
+	//main container
+	var tabMainContainer = document.createElement('main');
+	tabMainContainer.setAttribute('class', 'mdl-layout__content');
 
-	var eventShowProperties = eventSchema.show;
+	//tabs
+	var tabsDiv = document.createElement('div');
+	tabsDiv.setAttribute('class', 'mdl-tabs mdl-js-tabs');
 
-	var propKeys = Object.keys(eventProperties);
-
-	for (var i = 0; i < propKeys.length; i++) {
-		var prop = eventProperties[propKeys[i]];
-		// class - type - id - name - flagcontainer - flaglabel, labeltitle
-		var field = this.buildTextField(
-			null,
-			prop.type,
-			prop.id,
-			prop.name,
-			true,
-			true,
-			prop.label
-		);
-		form.appendChild(field);
+	//tabs header
+	var tabsHeader = document.createElement('div');
+	tabsHeader.setAttribute('class', 'mdl-tabs__tab-bar');
+	for (var i = 0; i < tabsCount; i++) {
+		//<a href="#tab1-panel" class="mdl-tabs__tab is-active">General</a>
+		var _class = 'mdl-tabs__tab' + (i == 0?' is-active':'');
+		var link = document.createElement('a');
+		var text = this.TABSTITLE[i];
+		var nodeText = document.createTextNode(text);
+		link.setAttribute('href', '#tab' + (i+1) + '-panel');
+		link.setAttribute('class', _class);
+		link.appendChild(nodeText);
+		tabsHeader.appendChild(link);
 	}
 
-	// Submit Button
+	tabsDiv.appendChild(tabsHeader);
 	var separator = document.createElement('p');
-	var submitButton = document.createElement('button');
-	submitButton.setAttribute(
-		'class',
-		'add-event-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--cyan-500 mdl-color-text--white'
-	);
-	var submitImage = document.createElement('img');
-	submitImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+	tabsDiv.appendChild(separator);
 
-	var text = document.createTextNode('Agregar Evento');
+	for (var i = 0; i < tabsCount; i++) {
+		// <div class="mdl-tabs__panel is-active" id="tab1-panel">
+		var _class = 'mdl-tabs__panel' + (i == 0?' is-active':'');
+		var tabContentContainer = document.createElement('div');
+		tabContentContainer.setAttribute('class', _class);
+		tabContentContainer.setAttribute('id', 'tab' + (i+1) + '-panel');
 
-	submitButton.appendChild(submitImage);
-	submitButton.appendChild(text);
+		var form = document.createElement('form');
+		form.setAttribute('action', '#');
+		form.setAttribute('class', 'add-event-form');
 
-	form.appendChild(separator);
-	form.appendChild(submitButton);
+		var eventProperties = eventSchema.properties["tab" + (i+1)];
 
-	return form;
+		var propKeys = Object.keys(eventProperties);
+
+		for (var j = 0; j < propKeys.length; j++) {
+			var prop = eventProperties[propKeys[j]];
+			// class - type - id - name - flagcontainer - flaglabel, labeltitle
+			var field = this.buildTextField(
+				null,
+				prop.type,
+				prop.id,
+				prop.name,
+				true,
+				true,
+				prop.label
+			);
+			form.appendChild(field);
+		}
+		tabContentContainer.appendChild(form);
+		tabsDiv.appendChild(tabContentContainer);
+	}
+
+	tabMainContainer.appendChild(tabsDiv);
+	tabDivContainer.appendChild(tabMainContainer);
+	return tabDivContainer
+
+
+	// var form = document.createElement('form');
+	// form.setAttribute('action', '#');
+	// form.setAttribute('class', 'add-event-form');
+
+	// console.log('---->', scraper);
+
+
+	// Submit Button
+	// var separator = document.createElement('p');
+	// var submitButton = document.createElement('button');
+	// submitButton.setAttribute(
+	// 	'class',
+	// 	'add-event-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--cyan-500 mdl-color-text--white'
+	// );
+	// var submitImage = document.createElement('img');
+	// submitImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+	//
+	// var text = document.createTextNode('Agregar Evento');
+	//
+	// submitButton.appendChild(submitImage);
+	// submitButton.appendChild(text);
+	//
+	// form.appendChild(separator);
+	// form.appendChild(submitButton);
+	//
+	// return form;
 
 }
 
@@ -264,27 +311,20 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	* @param {object} All the information on the page
 	*/
 scraperPop.buildSccrapperPageForm = function( scraper ) {
-
-	// Add custom css class to error page
-	document.body.className = "add-event-page";
-
 	// Create containers
 	var arrContainers = this.buildMainContainer();
 	var mainDiv = arrContainers[0];
 	var main = arrContainers[1];
 	var grid = arrContainers[2];
 
-	//TODO GET USER
-	var user = true;
-
 	//Create Table
-	var header = this.buildHeaderTable( user );
+	var header = this.buildHeaderTable();
 
-	//Create form
-	var form = this.getFormBaseScraperResults(scraper);
+	//Create Tab Form
+	var tabForms = this.getFormBaseScraperResults(scraper);
 
 	grid.appendChild(header);
-	grid.appendChild(form);
+	grid.appendChild(tabForms);
 	main.appendChild(grid);
 	mainDiv.appendChild(main);
 	document.body.appendChild(mainDiv);
@@ -326,7 +366,8 @@ window.addEventListener('DOMContentLoaded', function() {
 				console.log('Resultado --->', res.results.scraper);
 				scraperPop.buildSccrapperPageForm(res.results.scraper);
 			} else {
-				scraperPop.buildErrorPageScrapper();
+				scraperPop.buildSccrapperPageForm();
+				// scraperPop.buildErrorPageScrapper();
 			}
 		});
 	});
