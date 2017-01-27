@@ -278,7 +278,12 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		var propKeys = Object.keys(eventProperties);
 
 		for (var j = 0; j < propKeys.length; j++) {
+			var value = null;
+			if ( scraper && scraper.patch && scraper.patch.items ){
+				value = scraper.patch.items[propKeys[j]]
+			}
 			var prop = eventProperties[propKeys[j]];
+			
 			// type - id - name - flagcontainer - flaglabel, labeltitle
 			var field = this.buildTextField(
 				prop.type,
@@ -288,7 +293,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 				true,
 				prop.label,
 				prop.cls,
-				scraper.patch.items[propKeys[j]]
+				value
 			);
 			form.appendChild(field);
 		}
