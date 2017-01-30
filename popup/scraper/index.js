@@ -30,12 +30,13 @@ scraperPop.DEFAULT_CSS_CLASS_FIELD_CTN = 'full_space_fields';
 /**
  * buildLabelTextField - Build label for a texxtfield
  *
- * @param  {string} title description
- * @param  {string} forE  description
- * @param  {string} clss  description
+ * @param  {string} title Label
+ * @param  {string} forE  For Attribute
+ * @param  {string} clss  Label class
+ * @param  {string} type  Input type
  * @return {type}       description
  */
-scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, clss ) {
+scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, clss, type ) {
 
 	if ( !forE ) {
 		throw new Error('Missing parameter "forE" for label');
@@ -44,14 +45,25 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 	if ( !title ) {
 		throw new Error('Missing parameter "title" for label');
 	}
+	var label = null;
+	if ( type == 'checkbox' ) {
+		label = document.createElement('span');
+		label.setAttribute('class', 'checkbox__label');
+		var text = document.createTextNode(title);
+		label.appendChild(text);
+	} else {
+		label = document.createElement('label');
+		label.setAttribute('class', 'mdl-textfield__label');
+		label.setAttribute('for', forE);
+		var text = document.createTextNode(title);
+		label.appendChild(text);
+	}
 
-	var label = document.createElement('label');
-	label.setAttribute('class', 'mdl-textfield__label');
-	label.setAttribute('for', forE);
-	var text = document.createTextNode(title);
-	label.appendChild(text);
 	return label;
 };
+
+
+
 
 /**
  * buildTextField - Build a input field base
@@ -72,16 +84,29 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	var _container = containerFlag || true;
 	var container = null;
 	if ( _type == 'textarea' ) {
-		var input = document.createElement('textarea');
+		input = document.createElement('textarea');
 		input.setAttribute('type', 'text');
 		input.setAttribute('rows', '3');
 		if ( value ){
 			var value = document.createTextNode(value);
 			input.appendChild(value);
 		}
+	} else if ( _type == "tag" ) {
+		input = document.createElement('input');
+		if ( Array.isArray( value ) ) {
+			if ( typeof value [0]  == 'object') {
+				value = value.map(function(tag){
+					return tag.tag;
+				});
+			}
+			value && input.setAttribute('value', value);
+		}
 	} else {
-		var input = document.createElement('input');
+		input = document.createElement('input');
 		input.setAttribute('type', _type);
+		if ( _type == 'checkbox') {
+			_class = "mdl-checkbox__input";
+		}
 		value && input.setAttribute('value', value);
 	}
 	input.setAttribute('class', _class);
@@ -96,7 +121,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		container = this.buildTextFieldContainer(ctnCssCls);
 		container.appendChild(input);
 		if ( labelFlag ) {
-			var label = this.buildLabelTextField(labelTitle, name, null);
+			var label = this.buildLabelTextField(labelTitle, name, null, _type);
 			container.appendChild(label);
 		}
 	} else {
@@ -192,6 +217,7 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
 
+
 	//logo
 	var logo = document.createElement("img");
 	var path = chrome.extension.getURL('../icons/icon48.png')
@@ -236,6 +262,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	var tabDivContainer = document.createElement('div');
 	tabDivContainer.setAttribute('class', 'mdl-cell mdl-cell--12-col');
 	tabDivContainer.setAttribute('style', 'width:100%;');
+	tabDivContainer.setAttribute('id', 'main-cell');
 
 	//main container
 	var tabMainContainer = document.createElement('main');
@@ -250,12 +277,14 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	tabsHeader.setAttribute('class', 'mdl-tabs__tab-bar');
 	for (var i = 0; i < tabsCount; i++) {
 		//<a href="#tab1-panel" class="mdl-tabs__tab is-active">General</a>
-		var _class = 'mdl-tabs__tab' + (i == 0?' is-active':'');
+		// var _class = 'mdl-tabs__tab' + (i == 0?' is-active':'');
+		var _class = 'mdl-tabs__tab';
 		var link = document.createElement('a');
 		var text = this.TABSTITLE[i];
 		var nodeText = document.createTextNode(text);
 		link.setAttribute('href', '#tab' + (i+1) + '-panel');
 		link.setAttribute('class', _class);
+		// link.setAttribute('id', 'linktab' + (i+1));
 		link.appendChild(nodeText);
 		tabsHeader.appendChild(link);
 	}
@@ -264,7 +293,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	var separator = document.createElement('p');
 	tabsDiv.appendChild(separator);
 	for (var ii = 0; ii < tabsCount; ii++) {
-		// <div class="mdl-tabs__panel is-active" id="tab1-panel">
+
 		var _class = 'mdl-tabs__panel' + (ii == 0?' is-active':'');
 		var tabContentContainer = document.createElement('div');
 		tabContentContainer.setAttribute('class', _class);
@@ -283,7 +312,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 				value = scraper.patch.items[propKeys[j]]
 			}
 			var prop = eventProperties[propKeys[j]];
-			
+
 			// type - id - name - flagcontainer - flaglabel, labeltitle
 			var field = this.buildTextField(
 				prop.type,
@@ -320,11 +349,13 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	return tabDivContainer
 }
 
-/**
-	* buildSuccessPage - Build the success page
-	* @param {object} All the information on the page
-	*/
-scraperPop.buildSccrapperPageForm = function( scraper ) {
+	/**
+	 * scraperPop - Build the success page
+	 *
+	 * @param  {type} scraper     Scrapper results
+	 * @param  {type} showMessage Show indications
+	 */
+scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, showMessage ) {
 	// Create containers
 	var arrContainers = this.buildMainContainer();
 	var mainDiv = arrContainers[0];
@@ -338,10 +369,24 @@ scraperPop.buildSccrapperPageForm = function( scraper ) {
 	var tabForms = this.getFormBaseScraperResults(scraper);
 
 	grid.appendChild(header);
+	if ( showMessage ) {
+		var a = document.createElement('strong');
+		a.setAttribute('style', "font-size:12px; color:white;");
+		var text = document.createTextNode('Recarga o Usa el Context Menu');
+		var logo = document.createElement("img");
+		var path = chrome.extension.getURL('../../icons/ic_cached_white_24px.svg')
+		logo.setAttribute('src', path);
+		logo.setAttribute('border', '0');
+		a.appendChild(logo);
+		a.appendChild(text);
+		grid.appendChild(a);
+	}
 	grid.appendChild(tabForms);
 	main.appendChild(grid);
 	mainDiv.appendChild(main);
 	document.body.appendChild(mainDiv);
+
+
 }
 
 /**
@@ -350,11 +395,10 @@ scraperPop.buildSccrapperPageForm = function( scraper ) {
 window.addEventListener('DOMContentLoaded', function() {
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
-			if ( res && res.showForm ) {
-				console.log('Resultado --->', res.results.scraper);
-				scraperPop.buildSccrapperPageForm(res.results.scraper);
+			if ( res ) {
+				scraperPop.buildSccrapperPageForm(res.results.scraper, false);
 			} else {
-				scraperPop.buildSccrapperPageForm();
+				scraperPop.buildSccrapperPageForm(null, true);
 			}
 		});
 	});

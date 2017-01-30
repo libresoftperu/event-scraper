@@ -36,7 +36,9 @@ var scrapeMap = {
 						 "lat": { selecters: [ "/html/head/meta[27]/@content" ] },
 						 "log": { selecters: [ "/html/head/meta[28]/@content" ] },
 						 "ini": { selecters: [ "//*[@id=\"event-when-display\"]/time/@datetime"] },
-						 "ref": { 		window: { "propchain": ["location", "href"]}}
+						 "hstr": { selecters: [ "//*[@id=\"event-when-display\"]/time/p"]},
+						 "ref": { 		window: { "propchain": ["location", "href"] } },
+						 "lng": { selecters: [ "//*[@id=\"event-description-wrap\"]"] }
 					}
 				}
 			}

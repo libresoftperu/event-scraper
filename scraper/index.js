@@ -523,30 +523,22 @@ scraper.scrapePage = function () {
 /**
 	* Init Scraper Object
 	*/
+
 scraper.init();
 
 /**
 	* Listener - Listen incoming messages from other extension's components
 	*/
 chrome.runtime.onMessage.addListener( function ( DOMContentLoaded, sender, response ) {
-
-	/**
-		* showForm: <boolean >
-		* results: <object>
-		*/
 	var responseObject = {
-		showForm: false,
 		results: {}
 	};
 
 	if ( !!DOMContentLoaded ) {
 		if ( scraper.isProfile ) {
-			responseObject.showForm = true;
 			responseObject.results.scrapetype = scraper.isProfile;
 			responseObject.results.scraper = scraper.scrapePage();
-		} else {
-			responseObject.showForm = false;
 		}
-		response(responseObject);
 	}
+	response(responseObject);
 });

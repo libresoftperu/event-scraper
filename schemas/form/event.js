@@ -17,14 +17,14 @@ var eventSchema = {
 			"ref": { label:"URL", id:"ref", name: "ref", type: "text"},
 			"prc": { label:"Precio(desde)", id:"prc", name: "prc", type: "number", cls: "shared_space_fields_left"},
 			"dur": { label:"Duración(seg)", id:"dur", name: "dur", type: "number", cls: "shared_space_fields_right"},
-			"rpt": { label:"repeat", id:"rpt", name: "rpt"},
 			"img": { label:"imagen", id: "img", name: "img", type: "text"},
-			"tag": { label: "Tags", id:"tag", name:"tag", id:"tag", name: "tag"},
+			"tag": { label: "Tags", id:"tag", name:"tag", id:"tag", name: "tag", type: "tag"},
 			"cre": { label:"created stamp", id: "cre", name: "cre", type: "hidden"},
 			"crb": { label:"created by", id: "crb", name: "crb", type: "hidden"},
 			"mod": { label:"modified stamp", id: "mod", name: "mod", type: "hidden"},
 			"mob": { label:"modified by", id: "mob", name: "mob", type: "hidden"},
-			"own": { label:"owner/group id", id: "own", name: "own", type: "hidden"}
+			"own": { label:"owner/group id", id: "own", name: "own", type: "hidden"},
+			"rpt": { label:"Repetición", id:"rpt", name: "rpt", type: "checkbox"}
 		},
 		"tab3": {
 			"cty": { label:"Ciudad", id:"cty", name: "cty", type: "text"},

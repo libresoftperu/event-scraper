@@ -5,9 +5,11 @@
 
 var eventsHandler = {};
 
-eventsHandler.startedUp = function () {
-	console.log("eventsHandler startedUp (intalled or updated)");
-	eventsHandler.scrapeMap = scrapeMap;
+eventsHandler.startedUp =  function (tabId, changeInfo, tab) {
+	if (changeInfo.status == 'complete') {
+		console.log("eventsHandler startedUp (intalled or updated)");
+		eventsHandler.scrapeMap = scrapeMap;
+	}
 };
 
 eventsHandler.requestHandler = function ( request, sender, sendResponse ) {
