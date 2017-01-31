@@ -466,6 +466,7 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 		a.appendChild(text);
 		grid.appendChild(a);
 	}
+	componentHandler.upgradeElement(tabForms);
 	grid.appendChild(tabForms);
 	main.appendChild(grid);
 	mainDiv.appendChild(main);

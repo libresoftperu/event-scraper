@@ -38,7 +38,9 @@ var scrapeMap = {
 						 "ini": { selecters: [ "//*[@id=\"event-when-display\"]/time/@datetime"] },
 						 "hstr": { selecters: [ "//*[@id=\"event-when-display\"]/time/p"]},
 						 "ref": { 		window: { "propchain": ["location", "href"] } },
-						 "lng": { selecters: [ "//*[@id=\"event-description-wrap\"]"] }
+						 "lng": { selecters: [ "//*[@id=\"event-description-wrap\"]"] },
+						 "hstr": { selecters: [ "//*[@id=\"event-start-time\"]/span"]},
+						 "hend": { selecters: [ "//*[@id=\"event-end-time\"]/span"]},
 					}
 				}
 			}
