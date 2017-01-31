@@ -8,9 +8,13 @@
 		"48": "icons/icon48.png",
 		"128": "icons/icon128.png"
 	},
+
+	"content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com https://*.firebaseio-demo.com; object-src 'self'",
+
 	"browser_action": {
 		"default_popup": "popup/popup.html"
 	},
+	
 	"permissions": [
 		"https://*.facebook.com/*",
 		"http://*.facebook.com/*",

@@ -10,7 +10,7 @@ scraperPop.results = null;
 scraperPop.CUSTOM_TITLE = 'Aviso';
 
 /**
- *  CUSTOM MESSAGE FOR ERRORS
+ *	CUSTOM MESSAGE FOR ERRORS
  */
 scraperPop.CUSTOM_MESSAGE = 'Hubo un problema con la extension';
 
@@ -28,13 +28,28 @@ scraperPop.DEFAULT_CSS_CLASS_FIELD_CTN = 'full_space_fields';
 
 
 /**
+ * _initFBConfig - Create FB conection
+ */
+scraperPop.initFBConfig = function _initFBConfig( ) {
+	var config = {
+		apiKey: "AIzaSyBE-OGoae3FfibNRmmXUTfbftmpVpE2jxQ",
+		authDomain: "qchevere-2b000.firebaseapp.com",
+		databaseURL: "https://qchevere-2b000.firebaseio.com",
+		storageBucket: "qchevere-2b000.appspot.com",
+		messagingSenderId: "976081896316"
+	};
+	firebase.initializeApp(config);
+}
+
+
+/**
  * buildLabelTextField - Build label for a texxtfield
  *
- * @param  {string} title Label
- * @param  {string} forE  For Attribute
- * @param  {string} clss  Label class
- * @param  {string} type  Input type
- * @return {type}       description
+ * @param	{string} title Label
+ * @param	{string} forE	For Attribute
+ * @param	{string} clss	Label class
+ * @param	{string} type	Input type
+ * @return {type}			 description
  */
 scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, clss, type ) {
 
@@ -71,13 +86,13 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 /**
  * buildTextField - Build a input field base
  *
- * @param  {string}  type       Input Type [text, number, email ... etc]
- * @param  {string}  id         Input ID
- * @param  {string}  name       Input name
- * @param  {boolean} containerFlag  Div container Flag
- * @param  {string}  clss       Any addionatl CSS clases container
- * @param  {string}  value      Input value
- * @return {type}               Input object
+ * @param	{string}	type			 Input Type [text, number, email ... etc]
+ * @param	{string}	id				 Input ID
+ * @param	{string}	name			 Input name
+ * @param	{boolean} containerFlag	Div container Flag
+ * @param	{string}	clss			 Any addionatl CSS clases container
+ * @param	{string}	value			Input value
+ * @return {type}							 Input object
  */
 scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value ) {
 
@@ -97,7 +112,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	} else if ( _type == "tag" ) {
 		input = document.createElement('input');
 		if ( Array.isArray( value ) ) {
-			if ( typeof value [0]  == 'object') {
+			if ( typeof value [0]	== 'object') {
 				value = value.map(function(tag){
 					return tag.tag;
 				});
@@ -137,11 +152,11 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 }
 
  /**
-  * _buildTextFieldContainerfunction - Build the div container for the text inputs
-  *
-  * @param  {string} ctnCssCls description
-  * @return {div}           Div Container
-  */
+	* _buildTextFieldContainerfunction - Build the div container for the text inputs
+	*
+	* @param	{string} ctnCssCls description
+	* @return {div}					 Div Container
+	*/
 scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction ( ctnCssCls ) {
 	var div = document.createElement('div');
 	var _ctnCssCls = ctnCssCls || this.DEFAULT_CSS_CLASS_FIELD_CTN;
@@ -218,12 +233,13 @@ scraperPop.buildMainContainer = function () {
 	return [mainDiv, main, grid];
 }
 
-/**
- * buildHeaderTable - Build the header page's extension
- *
- * @return {dom}	<table>
- */
-scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
+ /**
+  * _buildHeaderTable - Build the header page's extension
+  *
+  * @param  {boolean} skipTitle Flag to skip the title on right corner
+  * @return {header}            Extension's header
+  */
+scraperPop.buildHeaderTable = function _buildHeaderTable( skipTitle ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
 	// componentHandler.upgradeElement(mainDiv);
@@ -242,18 +258,20 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
 	var textnode = document.createTextNode("Q'chevere");
 	strongTitle.appendChild(textnode);
 
-	//Action Title
-	var strongActionTitle = document.createElement("strong");
-	strongActionTitle.setAttribute('style', "margin-top:15px;font-size:14px; color:white; float:right");
-	var textnode = document.createTextNode("Evento Nuevo");
-	var eventImage = document.createElement('img');
-	eventImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
-	strongActionTitle.appendChild(eventImage);
-	strongActionTitle.appendChild(textnode);
-
 	mainDiv.appendChild(logo);
 	mainDiv.appendChild(strongTitle);
-	mainDiv.appendChild(strongActionTitle);
+
+	//Action Title
+	if ( !skipTitle ) {
+		var strongActionTitle = document.createElement("strong");
+		strongActionTitle.setAttribute('style', "margin-top:15px;font-size:14px; color:white; float:right");
+		var textnode = document.createTextNode("Evento Nuevo");
+		var eventImage = document.createElement('img');
+		eventImage.setAttribute('src', '../icons/ic_event_white_24px.svg');
+		strongActionTitle.appendChild(eventImage);
+		strongActionTitle.appendChild(textnode);
+		mainDiv.appendChild(strongActionTitle);
+	}
 
 	return mainDiv;
 }
@@ -355,17 +373,72 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	var text = document.createTextNode('Agregar Evento');
 	submitButton.appendChild(submitImage);
 	submitButton.appendChild(text);
-	// componentHandler.upgradeElement(submitButton);
+
+	// Add click event to save event button
+	submitButton.addEventListener("click", function(){
+		submitButton.setAttribute('disabled', true);
+		var data = scraperPop.getFormsData();
+		if ( scraperPop.validate( data ) ){
+			var resultPromise = scraperPop.saveEvent(data);
+			resultPromise.then( function(){
+				scraperPop.buildPageEventAdded();
+			}, function(error){
+				console.log(error)
+			});
+		}
+	});
+
 	tabMainContainer.appendChild(submitButton);
 	tabDivContainer.appendChild(tabMainContainer);
 	return tabDivContainer
 }
 
+
+/**
+ * _buildPageEventAdded - Build Succed Added Event Page
+ *
+ * @return {type}  description
+ */
+scraperPop.buildPageEventAdded = function _buildPageEventAdded() {
+	// Create containers
+	var arrContainers = this.buildMainContainer();
+	var mainDiv = arrContainers[0];
+	var main = arrContainers[1];
+	var grid = arrContainers[2];
+
+	grid.className = grid.className + ' mdl-grid-event-added';
+
+	//Create Header
+	var header = this.buildHeaderTable( true );
+
+	var message = document.createElement('strong');
+	message.setAttribute('style', "font-size:18px; color:white;");
+	var text = document.createTextNode('Evento Agregado');
+
+	var logo = document.createElement("img");
+	var path = chrome.extension.getURL('../../icons/ic_done_white_32px.svg');
+	logo.setAttribute('src', path);
+	logo.setAttribute('border', '0');
+
+	message.appendChild(logo);
+	message.appendChild(text);
+	grid.appendChild(header);
+	grid.appendChild(message);
+	main.appendChild(grid);
+	mainDiv.appendChild(main);
+	document.body.innerHTML = "";
+	document.body.className = 'event-added';
+	document.body.appendChild(mainDiv);
+	var html =document.getElementsByTagName('html')[0]
+	html.setAttribute('style', 'height:150px');
+	componentHandler.upgradeElement(html);
+}
+
 	/**
 	 * scraperPop - Build the success page
 	 *
-	 * @param  {type} scraper     Scrapper results
-	 * @param  {type} showMessage Show indications
+	 * @param	{type} scraper		 Scrapper results
+	 * @param	{type} showMessage Show indications
 	 */
 scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, showMessage ) {
 	// Create containers
@@ -374,7 +447,7 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	var main = arrContainers[1];
 	var grid = arrContainers[2];
 
-	//Create Table
+	//Create Header
 	var header = this.buildHeaderTable();
 
 	//Create Tab Form
@@ -400,10 +473,72 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	document.body.appendChild(mainDiv);
 }
 
+
+/**
+ * _getFormsData - Get Event Data from forms
+ *
+ * @return {object}  Event Object
+ */
+scraperPop.getFormsData = function _getFormsData() {
+	var tabsCount = this.TABSTITLE.length;
+	var data = {};
+	for (var i = 0; i < tabsCount; i++) {
+		var eventProperties = eventSchema.properties["tab" + (i+1)];
+		var propKeys = Object.keys(eventProperties);
+		for (var j = 0; j < propKeys.length; j++) {
+			var prop = eventProperties[propKeys[j]];
+			var type = prop.type;
+			var id = prop.id;
+
+			if (!id) {
+				throw new Error('No id specified on schema/form for');
+			}
+
+			var input = document.getElementById(id);
+
+			switch (true) {
+				case  ['text', 'hidden', 'number','textarea', 'time', 'date', 'tag' ].indexOf(type) >= 0:
+					data[id] = input.value;
+					break;
+				case type == 'checkbox':
+					data[id] = input.checked;
+					break;
+				default:
+					data[id] = input.value;
+					break;
+			}
+		}
+	}
+	return data;
+}
+
+/**
+ * _validate - Validate event's data
+ */
+scraperPop.validate = function _validate() {
+	return true;
+}
+
+ /**
+  * _saveEvent - Save the event on firebase DB
+  *
+  * @param  {object} data Event Data
+  * @return {type}      description
+  */
+scraperPop.saveEvent = function _saveEvent( postData ) {
+	var newEventKey = firebase.database().ref().child('events').push().key;
+	var updates = {};
+	updates['/events/' + newEventKey] = postData;
+	return firebase.database().ref().update(updates);
+}
+
 /**
 	* window|addEventListener - Event when the DOM	is ready for manipulation
 	*/
 window.addEventListener('DOMContentLoaded', function() {
+	//Init firebase configuration
+	scraperPop.initFBConfig();
+
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
 				if ( res ) {

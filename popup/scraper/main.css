@@ -7,6 +7,16 @@ body{
 	background-color:#687dc1;
 }
 
+body.event-added{
+	width: 400px;
+	height: 150px;
+	background-color:#687dc1;
+}
+
+.mdl-grid-event-added{
+	justify-content: center
+}
+
 .no-left-right-margin{
 	margin-left: 0px;
 	margin-right: 0px;
