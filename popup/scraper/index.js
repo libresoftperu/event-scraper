@@ -59,6 +59,9 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 		label.appendChild(text);
 	}
 
+	//DINAMYC MDL CONTNET
+	// componentHandler.upgradeElement(label);
+
 	return label;
 };
 
@@ -113,6 +116,8 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	id && input.setAttribute('id', id);
 	name && input.setAttribute('name', name);
 
+	// componentHandler.upgradeElement(input);
+
 	if (_type == 'date' || _type == 'time'){
 		labelFlag = false;
 	}
@@ -127,7 +132,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	} else {
 		container = input;
 	}
-
+	// componentHandler.upgradeElement(container);
 	return container;
 }
 
@@ -142,6 +147,7 @@ scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction (
 	var _ctnCssCls = ctnCssCls || this.DEFAULT_CSS_CLASS_FIELD_CTN;
 	var _class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label ' + _ctnCssCls;
 	div.setAttribute('class', _class);
+	// componentHandler.upgradeElement(div);
 	return div;
 }
 
@@ -205,6 +211,10 @@ scraperPop.buildMainContainer = function () {
 	var grid = document.createElement('div');
 	grid.setAttribute('class', 'mdl-grid');
 
+	// componentHandler.upgradeElement(mainDiv);
+	// componentHandler.upgradeElement(main);
+	// componentHandler.upgradeElement(grid);
+
 	return [mainDiv, main, grid];
 }
 
@@ -216,7 +226,7 @@ scraperPop.buildMainContainer = function () {
 scraperPop.buildHeaderTable = function _buildHeaderTable( ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
-
+	// componentHandler.upgradeElement(mainDiv);
 
 	//logo
 	var logo = document.createElement("img");
@@ -263,29 +273,31 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	tabDivContainer.setAttribute('class', 'mdl-cell mdl-cell--12-col');
 	tabDivContainer.setAttribute('style', 'width:100%;');
 	tabDivContainer.setAttribute('id', 'main-cell');
+	// componentHandler.upgradeElement(tabDivContainer);
 
 	//main container
 	var tabMainContainer = document.createElement('main');
 	tabMainContainer.setAttribute('class', 'mdl-layout__content');
+	// componentHandler.upgradeElement(tabMainContainer);
 
 	//tabs
 	var tabsDiv = document.createElement('div');
 	tabsDiv.setAttribute('class', 'mdl-tabs mdl-js-tabs');
+	// componentHandler.upgradeElement(tabsDiv);
 
 	//tabs header
 	var tabsHeader = document.createElement('div');
 	tabsHeader.setAttribute('class', 'mdl-tabs__tab-bar');
+	// componentHandler.upgradeElement(tabsHeader);
 	for (var i = 0; i < tabsCount; i++) {
-		//<a href="#tab1-panel" class="mdl-tabs__tab is-active">General</a>
-		// var _class = 'mdl-tabs__tab' + (i == 0?' is-active':'');
 		var _class = 'mdl-tabs__tab';
 		var link = document.createElement('a');
 		var text = this.TABSTITLE[i];
 		var nodeText = document.createTextNode(text);
 		link.setAttribute('href', '#tab' + (i+1) + '-panel');
 		link.setAttribute('class', _class);
-		// link.setAttribute('id', 'linktab' + (i+1));
 		link.appendChild(nodeText);
+		// componentHandler.upgradeElement(link);
 		tabsHeader.appendChild(link);
 	}
 
@@ -298,7 +310,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		var tabContentContainer = document.createElement('div');
 		tabContentContainer.setAttribute('class', _class);
 		tabContentContainer.setAttribute('id', 'tab' + (ii+1) + '-panel');
-
+		// componentHandler.upgradeElement(tabContentContainer);
 		var form = document.createElement('form');
 		form.setAttribute('action', '#');
 		form.setAttribute('class', 'add-event-form');
@@ -343,7 +355,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	var text = document.createTextNode('Agregar Evento');
 	submitButton.appendChild(submitImage);
 	submitButton.appendChild(text);
-
+	// componentHandler.upgradeElement(submitButton);
 	tabMainContainer.appendChild(submitButton);
 	tabDivContainer.appendChild(tabMainContainer);
 	return tabDivContainer
@@ -372,7 +384,7 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	if ( showMessage ) {
 		var a = document.createElement('strong');
 		a.setAttribute('style', "font-size:12px; color:white;");
-		var text = document.createTextNode('Recarga o Usa el Context Menu');
+		var text = document.createTextNode('Recarga la pagina o usa el Context Menu');
 		var logo = document.createElement("img");
 		var path = chrome.extension.getURL('../../icons/ic_cached_white_24px.svg')
 		logo.setAttribute('src', path);
@@ -384,9 +396,8 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	grid.appendChild(tabForms);
 	main.appendChild(grid);
 	mainDiv.appendChild(main);
+	componentHandler.upgradeElement(mainDiv);
 	document.body.appendChild(mainDiv);
-
-
 }
 
 /**
@@ -395,11 +406,11 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 window.addEventListener('DOMContentLoaded', function() {
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
-			if ( res ) {
-				scraperPop.buildSccrapperPageForm(res.results.scraper, false);
-			} else {
-				scraperPop.buildSccrapperPageForm(null, true);
-			}
+				if ( res ) {
+					scraperPop.buildSccrapperPageForm(res.results.scraper, false);
+				} else {
+					scraperPop.buildSccrapperPageForm(null, true);
+				}
 		});
 	});
 });
