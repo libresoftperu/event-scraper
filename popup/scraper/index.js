@@ -478,16 +478,17 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	var tab = document.getElementById('tabs-ext');
 	componentHandler.downgradeElements(tab);
 	componentHandler.upgradeElement(tab);
-	var divcont = document.getElementByClass('mdl-js-textfield');
+	var divcont = document.getElementsByClassName('mdl-js-textfield');
 	var divcontlength = divcont.length;
 	for (var i = 0; i < divcontlength; i++) {
 		componentHandler.upgradeElement(divcont[i]);
 	}
-	var labelcont = document.getElementByClass('mdl-textfield__label');
+	var labelcont = document.getElementsByClassName('mdl-textfield__label');
 	var labelcontlength = labelcont.length;
 	for (var i = 0; i < labelcontlength; i++) {
 		componentHandler.upgradeElement(labelcont[i]);
 	}
+	// document.querySelector('mdl-js-textfield').MaterialTextfield.checkDirty();
 }
 
 
