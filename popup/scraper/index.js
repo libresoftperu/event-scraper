@@ -131,8 +131,6 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	id && input.setAttribute('id', id);
 	name && input.setAttribute('name', name);
 
-	// componentHandler.upgradeElement(input);
-
 	if (_type == 'date' || _type == 'time'){
 		labelFlag = false;
 	}
@@ -147,7 +145,6 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 	} else {
 		container = input;
 	}
-	// componentHandler.upgradeElement(container);
 	return container;
 }
 
@@ -162,8 +159,6 @@ scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction (
 	var _ctnCssCls = ctnCssCls || this.DEFAULT_CSS_CLASS_FIELD_CTN;
 	var _class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label ' + _ctnCssCls;
 	div.setAttribute('class', _class);
-	// componentHandler.downgradeElements(div);
-	// componentHandler.upgradeElement(div);
 	return div;
 }
 
@@ -227,10 +222,6 @@ scraperPop.buildMainContainer = function () {
 	var grid = document.createElement('div');
 	grid.setAttribute('class', 'mdl-grid');
 
-	// componentHandler.upgradeElement(mainDiv);
-	// componentHandler.upgradeElement(main);
-	// componentHandler.upgradeElement(grid);
-
 	return [mainDiv, main, grid];
 }
 
@@ -243,7 +234,6 @@ scraperPop.buildMainContainer = function () {
 scraperPop.buildHeaderTable = function _buildHeaderTable( skipTitle ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
-	// componentHandler.upgradeElement(mainDiv);
 
 	//logo
 	var logo = document.createElement("img");
@@ -292,12 +282,10 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	tabDivContainer.setAttribute('class', 'mdl-cell mdl-cell--12-col');
 	tabDivContainer.setAttribute('style', 'width:100%;');
 	tabDivContainer.setAttribute('id', 'main-cell');
-	// componentHandler.upgradeElement(tabDivContainer);
 
 	//main container
 	var tabMainContainer = document.createElement('main');
 	tabMainContainer.setAttribute('class', 'mdl-layout__content');
-	// componentHandler.upgradeElement(tabMainContainer);
 
 	//tabs
 	var tabsDiv = document.createElement('div');
@@ -385,7 +373,8 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 			resultPromise.then( function(){
 				scraperPop.buildPageEventAdded();
 			}, function(error){
-				console.log(error)
+				alert('Problem saving information on firebase, check console');
+				console.error(error);
 			});
 		}
 	});
@@ -440,7 +429,7 @@ scraperPop.buildPageEventAdded = function _buildPageEventAdded() {
 	 * scraperPop - Build the success page
 	 *
 	 * @param	{type} scraper		 Scrapper results
-	 * @param	{type} showMessage Show indications
+	 * @param	{type} showMessage Show reload flag
 	 */
 scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, showMessage ) {
 	// Create containers
@@ -474,7 +463,8 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	mainDiv.appendChild(main);
 	componentHandler.upgradeElement(mainDiv);
 	document.body.appendChild(mainDiv);
-	//HACK FOR RENDER TABS CORRECTLY
+
+	//HACK FOR RENDER TABS CORRECTLY WITH MDL
 	var tab = document.getElementById('tabs-ext');
 	componentHandler.downgradeElements(tab);
 	componentHandler.upgradeElement(tab);
@@ -488,7 +478,6 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	for (var i = 0; i < labelcontlength; i++) {
 		componentHandler.upgradeElement(labelcont[i]);
 	}
-	// document.querySelector('mdl-js-textfield').MaterialTextfield.checkDirty();
 }
 
 
@@ -534,6 +523,7 @@ scraperPop.getFormsData = function _getFormsData() {
  * _validate - Validate event's data
  */
 scraperPop.validate = function _validate() {
+	//TODO ADD VALIDATIONS TO EVENT OBJECT
 	return true;
 }
 
@@ -556,7 +546,7 @@ scraperPop.saveEvent = function _saveEvent( postData ) {
 window.addEventListener('DOMContentLoaded', function() {
 	//Init firebase configuration
 	scraperPop.initFBConfig();
-
+	//Get scrapper info
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
 				if ( res ) {
