@@ -162,6 +162,7 @@ scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction (
 	var _ctnCssCls = ctnCssCls || this.DEFAULT_CSS_CLASS_FIELD_CTN;
 	var _class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label ' + _ctnCssCls;
 	div.setAttribute('class', _class);
+	// componentHandler.downgradeElements(div);
 	// componentHandler.upgradeElement(div);
 	return div;
 }
@@ -301,12 +302,15 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 	//tabs
 	var tabsDiv = document.createElement('div');
 	tabsDiv.setAttribute('class', 'mdl-tabs mdl-js-tabs');
-	// componentHandler.upgradeElement(tabsDiv);
+	tabsDiv.setAttribute('id', 'tabs-ext');
 
 	//tabs header
 	var tabsHeader = document.createElement('div');
+
+	//HACKE FOR RENDER TABS CORRECTLY
 	tabsHeader.setAttribute('class', 'mdl-tabs__tab-bar');
-	// componentHandler.upgradeElement(tabsHeader);
+	componentHandler.upgradeElement(tabsHeader);
+
 	for (var i = 0; i < tabsCount; i++) {
 		var _class = 'mdl-tabs__tab';
 		var link = document.createElement('a');
@@ -315,7 +319,6 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		link.setAttribute('href', '#tab' + (i+1) + '-panel');
 		link.setAttribute('class', _class);
 		link.appendChild(nodeText);
-		// componentHandler.upgradeElement(link);
 		tabsHeader.appendChild(link);
 	}
 
@@ -328,7 +331,6 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		var tabContentContainer = document.createElement('div');
 		tabContentContainer.setAttribute('class', _class);
 		tabContentContainer.setAttribute('id', 'tab' + (ii+1) + '-panel');
-		// componentHandler.upgradeElement(tabContentContainer);
 		var form = document.createElement('form');
 		form.setAttribute('action', '#');
 		form.setAttribute('class', 'add-event-form');
@@ -472,6 +474,20 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 	mainDiv.appendChild(main);
 	componentHandler.upgradeElement(mainDiv);
 	document.body.appendChild(mainDiv);
+	//HACK FOR RENDER TABS CORRECTLY
+	var tab = document.getElementById('tabs-ext');
+	componentHandler.downgradeElements(tab);
+	componentHandler.upgradeElement(tab);
+	var divcont = document.getElementByClass('mdl-js-textfield');
+	var divcontlength = divcont.length;
+	for (var i = 0; i < divcontlength; i++) {
+		componentHandler.upgradeElement(divcont[i]);
+	}
+	var labelcont = document.getElementByClass('mdl-textfield__label');
+	var labelcontlength = labelcont.length;
+	for (var i = 0; i < labelcontlength; i++) {
+		componentHandler.upgradeElement(labelcont[i]);
+	}
 }
 
 
