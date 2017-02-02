@@ -73,10 +73,6 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 		var text = document.createTextNode(title);
 		label.appendChild(text);
 	}
-
-	//DINAMYC MDL CONTNET
-	// componentHandler.upgradeElement(label);
-
 	return label;
 };
 
@@ -96,21 +92,18 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
  */
 scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value ) {
 
-	var _class = 'mdl-textfield__input';
-	var _type = type || 'text';
-	var input = null;
-	var _container = containerFlag || true;
-	var container = null;
-	if ( _type == 'textarea' ) {
-		input = document.createElement('textarea');
-		input.setAttribute('type', 'text');
-		input.setAttribute('rows', '3');
-		if ( value ){
-			var value = document.createTextNode(value);
-			input.appendChild(value);
-		}
-	} else if ( _type == "tag" ) {
-		input = document.createElement('input');
+	var _createTagInput = function ___createTagInput(id, name, _value, labelFlag, labelTitle, ctnCssCls){
+		var _class = 'mdl-textfield__input';
+		var _type = 'text';
+		var container = null;
+		var input = document.createElement('input');
+
+		_value && input.setAttribute('value', _value);
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+		 _type && input.setAttribute('type', _type);
+
 		if ( Array.isArray( value ) ) {
 			if ( typeof value [0]	== 'object') {
 				value = value.map(function(tag){
@@ -119,33 +112,146 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			}
 			value && input.setAttribute('value', value);
 		}
-	} else {
-		input = document.createElement('input');
-		input.setAttribute('type', _type);
-		if ( _type == 'checkbox') {
-			_class = "mdl-checkbox__input";
-		}
-		value && input.setAttribute('value', value);
-	}
-	input.setAttribute('class', _class);
-	id && input.setAttribute('id', id);
-	name && input.setAttribute('name', name);
-
-	if (_type == 'date' || _type == 'time'){
-		labelFlag = false;
-	}
-
-	if ( _container && _type != 'hidden') {
-		container = this.buildTextFieldContainer(ctnCssCls);
+		container = scraperPop.buildTextFieldContainer(ctnCssCls);
 		container.appendChild(input);
 		if ( labelFlag ) {
-			var label = this.buildLabelTextField(labelTitle, name, null, _type);
+			var label = scraperPop.buildLabelTextField(labelTitle, name, null, _type);
 			container.appendChild(label);
+		} else {
+			container = input;
 		}
-	} else {
-		container = input;
+		return container;
 	}
-	return container;
+
+	var _createTextArea = function __createTextArea(id, name, _value, labelFlag, labelTitle, ctnCssCls){
+		var _class = 'mdl-textfield__input';
+		var _type = 'textarea';
+		var container = null;
+		var input = document.createElement('textarea');
+
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+			true && input.setAttribute('type', 'text');
+			true && input.setAttribute('rows', '3');
+
+		if ( value ){
+			var value = document.createTextNode(value);
+			input.appendChild(value);
+		}
+
+		container = scraperPop.buildTextFieldContainer(ctnCssCls);
+		container.appendChild(input);
+		if ( labelFlag ) {
+			var label = scraperPop.buildLabelTextField(labelTitle, name, null, _type);
+			container.appendChild(label);
+		} else {
+			container = input;
+		}
+		return container;
+	}
+
+	var _createTextInput = function __createTextInput(id, name, _value, labelFlag, labelTitle, ctnCssCls){
+		var _class = 'mdl-textfield__input';
+		var _type = 'text';
+		var container = null;
+		var input = document.createElement('input');
+
+		_value && input.setAttribute('value', _value);
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+		 _type && input.setAttribute('type', _type);
+
+		container = scraperPop.buildTextFieldContainer(ctnCssCls);
+		container.appendChild(input);
+		if ( labelFlag ) {
+			var label = scraperPop.buildLabelTextField(labelTitle, name, null, _type);
+			container.appendChild(label);
+		} else {
+			container = input;
+		}
+		return container;
+	}
+
+	var _createCheckBoxInput = function __createCheckBoxInput(id, name, _value, labelFlag, labelTitle, ctnCssCls) {
+		var _class = "mdl-checkbox__input";
+		var _type = 'checkbox';
+		var container = null;
+		var input = document.createElement('input');
+
+		_value && input.setAttribute('value', _value);
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+		 _type && input.setAttribute('type', _type);
+
+		container = scraperPop.buildTextFieldContainer(ctnCssCls);
+		container.appendChild(input);
+		if ( labelFlag ) {
+			var label = scraperPop.buildLabelTextField(labelTitle, name, null, _type);
+			container.appendChild(label);
+		} else {
+			container = input;
+		}
+		return container;
+	}
+
+	var _createDateTimeInput = function __createDateTimeInput(id, name, _value, labelFlag, labelTitle, ctnCssCls, type) {
+		var _class = 'mdl-textfield__input';
+		var _type = type;
+		var container = null;
+		var input = document.createElement('input');
+
+		_value && input.setAttribute('value', _value);
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+		 _type && input.setAttribute('type', _type);
+		console.log('ctnCssCls->', ctnCssCls);
+		container = scraperPop.buildTextFieldContainer(ctnCssCls);
+		container.appendChild(input);
+		return container;
+	}
+
+	var _createHiddenInput = function __createHiddenInput(id, name, _value, labelFlag, labelTitle, ctnCssCls) {
+		var _class = 'mdl-textfield__input';
+		var _type = 'hidden';
+		var container = null;
+		var input = document.createElement('input');
+
+		_value && input.setAttribute('value', _value);
+		_class && input.setAttribute('class', _class);
+				id && input.setAttribute('id', id);
+			name && input.setAttribute('name', name);
+		 _type && input.setAttribute('type', _type);
+
+		return input;
+	}
+
+	switch (true) {
+		case type == 'text':
+			return _createTextInput(id, name, value, true, labelTitle, ctnCssCls);
+			break;
+		case type == 'textarea':
+			return _createTextArea(id, name, value, true, labelTitle, ctnCssCls);
+			break;
+		case type == 'tag':
+			return _createTagInput(id, name, value, true, labelTitle, ctnCssCls);
+			break;
+		case type == 'checkbox':
+			return _createCheckBoxInput(id, name, value, true, labelTitle, ctnCssCls);
+			break;
+		case type == 'time' || type == 'date':
+			return _createDateTimeInput(id, name, value, false, null, ctnCssCls, type);
+			break;
+		case type == 'hidden':
+			return _createHiddenInput(id, name, value, false, null, ctnCssCls);
+			break;
+		default:
+			return _createTextInput(id, name, value, true, labelTitle, ctnCssCls);
+			break;
+	}
 }
 
  /**
@@ -226,11 +332,11 @@ scraperPop.buildMainContainer = function () {
 }
 
  /**
-  * _buildHeaderTable - Build the header page's extension
-  *
-  * @param  {boolean} skipTitle Flag to skip the title on right corner
-  * @return {header}            Extension's header
-  */
+	* _buildHeaderTable - Build the header page's extension
+	*
+	* @param	{boolean} skipTitle Flag to skip the title on right corner
+	* @return {header}						Extension's header
+	*/
 scraperPop.buildHeaderTable = function _buildHeaderTable( skipTitle ) {
 	var mainDiv = document.createElement('div');
 	mainDiv.setAttribute( 'class', 'mdl-cell mdl-cell--12-col no-left-right-margin');
@@ -388,7 +494,7 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 /**
  * _buildPageEventAdded - Build Succed Added Event Page
  *
- * @return {type}  description
+ * @return {type}	description
  */
 scraperPop.buildPageEventAdded = function _buildPageEventAdded() {
 	// Create containers
@@ -484,7 +590,7 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 /**
  * _getFormsData - Get Event Data from forms
  *
- * @return {object}  Event Object
+ * @return {object}	Event Object
  */
 scraperPop.getFormsData = function _getFormsData() {
 	var tabsCount = this.TABSTITLE.length;
@@ -504,7 +610,7 @@ scraperPop.getFormsData = function _getFormsData() {
 			var input = document.getElementById(id);
 
 			switch (true) {
-				case  ['text', 'hidden', 'number','textarea', 'time', 'date', 'tag' ].indexOf(type) >= 0:
+				case	['text', 'hidden', 'number','textarea', 'time', 'date', 'tag' ].indexOf(type) >= 0:
 					data[id] = input.value;
 					break;
 				case type == 'checkbox':
@@ -528,11 +634,11 @@ scraperPop.validate = function _validate() {
 }
 
  /**
-  * _saveEvent - Save the event on firebase DB
-  *
-  * @param  {object} data Event Data
-  * @return {type}      description
-  */
+	* _saveEvent - Save the event on firebase DB
+	*
+	* @param	{object} data Event Data
+	* @return {type}			description
+	*/
 scraperPop.saveEvent = function _saveEvent( postData ) {
 	var newEventKey = firebase.database().ref().child('events').push().key;
 	var updates = {};
