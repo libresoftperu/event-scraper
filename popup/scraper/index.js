@@ -241,7 +241,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		case type == 'checkbox':
 			return _createCheckBoxInput(id, name, value, true, labelTitle, ctnCssCls);
 			break;
-		case type == 'time' || type == 'date':
+		case type == 'datetime-local':
 			return _createDateTimeInput(id, name, value, false, null, ctnCssCls, type);
 			break;
 		case type == 'hidden':
@@ -621,6 +621,10 @@ scraperPop.getFormsData = function _getFormsData() {
 			}
 		}
 	}
+
+	//CUSTOM VALUES BUILD BASE ON THE CURRENT INFORMATION
+
+
 	return data;
 }
 

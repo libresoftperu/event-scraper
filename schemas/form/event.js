@@ -10,6 +10,7 @@ var eventSchema = {
 			"ini": { label:"Fecha Inicio", id:"ini", name: "ini", type: "datetime-local", cls: "shared_space_fields_left"},
 			"end": { label:"Fecha Fin", id:"end", name: "end", type: "datetime-local", cls: "shared_space_fields_right"},
 			"lng": { label:"Descripción" , id:"lng", name: "lng", type: "textarea"},
+			"src": { label:"Source", id: "src", name: "src", type: "hidden"}
 		},
 		"tab2": {
 			"ref": { label:"URL", id:"ref", name: "ref", type: "text"},

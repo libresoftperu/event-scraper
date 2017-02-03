@@ -511,11 +511,13 @@ scraper.scrapePage = function () {
 	scrape[method].scrapestamp = Date.now();
 	scrape[method].items = {};
 
-
 	var fields = routedscraper.fields;
 	if (fields) {
 		scrape[method].items = scraper.scrapeFields(fields);
 	}
+
+	// ADD SOURCE TO THE EVENT(FACEBOOK, EVENTBRIDE, ... ETC)
+	scrape[method].items["src"] = scrape[method].scrapedom
 
 	console.log("scrape:",scrape);
 	return scrape;
