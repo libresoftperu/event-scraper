@@ -7,10 +7,8 @@ var eventSchema = {
 			"pub": { label:"publish stamp" , id:"pub", name: "pub", type: "hidden"},
 			"tit": { label:"Nombre", id:"tit", name: "tit", type: "text"},
 			"sht": { label:"Detalle" , id:"sht", name: "sht", type: "text"},
-			"ini": { label:"Fecha Inicio", id:"ini", name: "ini", type: "date", cls: "shared_space_fields_left"},
-			"end": { label:"Fecha Fin", id:"end", name: "end", type: "date", cls: "shared_space_fields_right"},
-			"hstr": { label:"Hora Inicio", id: "hstr", name: "hstr", type: "time", cls: "shared_space_fields_left"},
-			"hend": { label:"Hora Termino", id: "hend", name: "hend", type: "time",cls: "shared_space_fields_right" },
+			"ini": { label:"Fecha Inicio", id:"ini", name: "ini", type: "datetime-local", cls: "shared_space_fields_left"},
+			"end": { label:"Fecha Fin", id:"end", name: "end", type: "datetime-local", cls: "shared_space_fields_right"},
 			"lng": { label:"Descripción" , id:"lng", name: "lng", type: "textarea"},
 		},
 		"tab2": {

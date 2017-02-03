@@ -135,8 +135,8 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			true && input.setAttribute('type', 'text');
 			true && input.setAttribute('rows', '3');
 
-		if ( value ){
-			var value = document.createTextNode(value);
+		if ( _value ){
+			var value = document.createTextNode(_value);
 			input.appendChild(value);
 		}
 
@@ -208,7 +208,6 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 				id && input.setAttribute('id', id);
 			name && input.setAttribute('name', name);
 		 _type && input.setAttribute('type', _type);
-		console.log('ctnCssCls->', ctnCssCls);
 		container = scraperPop.buildTextFieldContainer(ctnCssCls);
 		container.appendChild(input);
 		return container;

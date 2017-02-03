@@ -14,14 +14,16 @@
 	"browser_action": {
 		"default_popup": "popup/popup.html"
 	},
-	
+
 	"permissions": [
 		"https://*.facebook.com/*",
 		"http://*.facebook.com/*",
 		"https://*.meetup.com/*",
 		"http://*.meetup.com/*",
 		"https://*.eventbrite.es/*",
-		"http://*.eventbrite.es/*"
+		"http://*.eventbrite.es/*",
+		"https://*.eventbrite.com/*",
+		"http://*.eventbrite.com/*"
 	],
 	"background": {
 		"persistent":false,
@@ -37,7 +39,9 @@
 				"http://www.meetup.com/es-ES/*",
 				"https://www.meetup.com/es-ES/*",
 				"https://www.eventbrite.es/e/*",
-				"http://www.eventbrite.es/e/*"
+				"http://www.eventbrite.es/e/*",
+				"https://www.eventbrite.com/e/*",
+				"http://www.eventbrite.com/e/*"
 			],
 			"js": ["scraper/index.js"]
 		}

@@ -35,12 +35,9 @@ var scrapeMap = {
 						 "cty": { selecters: [ "/html/head/meta[25]/@content"] },
 						 "lat": { selecters: [ "/html/head/meta[27]/@content" ] },
 						 "log": { selecters: [ "/html/head/meta[28]/@content" ] },
-						 "ini": { selecters: [ "//*[@id=\"event-when-display\"]/time/@datetime"] },
-						 "hstr": { selecters: [ "//*[@id=\"event-when-display\"]/time/p"]},
+						 "ini": { selecters: [ "//*[@id=\"event-start-time\"]/@datetime"] },
 						 "ref": { 		window: { "propchain": ["location", "href"] } },
 						 "lng": { selecters: [ "//*[@id=\"event-description-wrap\"]"] },
-						 "hstr": { selecters: [ "//*[@id=\"event-start-time\"]/span"]},
-						 "hend": { selecters: [ "//*[@id=\"event-end-time\"]/span"]},
 					}
 				}
 			}
@@ -54,6 +51,7 @@ var scrapeMap = {
 					"expanders": [ ],
 					"fields": {
 						 "eid": {	selecters: [ "[@id=\"event-page\"]/@data-event-id"] },
+						 "sht": { selecters: [ "/html/head/meta[4]/@content" ] },
 						 "tit": { selecters: [ "/html/head/meta[29]/@content"] },
 						 "lng": { selecters: [ "/html/head/meta[30]/@content"] },
 						 "img": { selecters: [ "/html/head/meta[28]/@content"] },
@@ -61,8 +59,9 @@ var scrapeMap = {
 						 "ref": { selecters: [ "/html/head/meta[31]/@content"] },
 						 "lat": { selecters: [ "/html/head/meta[35]/@content"] },
 						 "log": { selecters: [ "/html/head/meta[36]/@content"] },
-						 "ini": { selecters: [ "/html/head/meta[37]/@content"] },
-						 "end": { selecters: [ "/html/head/meta[38]/@content"] },
+						 "ini": { selecters: [ "//*[@id=\"event-page\"]/main/div[1]/div[2]/div/section[1]/div[1]/div/div/div[2]/div/div[1]/meta[1]/@content"] },
+						 "end": { selecters: [ "//*[@id=\"event-page\"]/main/div[1]/div[2]/div/section[1]/div[1]/div/div/div[2]/div/div[1]/meta[2]/@content"] },
+						 "prc": { selecters: [ "//*[@id=\"event-page\"]/main/div[1]/div[2]/div/div[1]/div/div[2]/div/div[3]/div"] },
 						 "tag": {
 							 "base": "//*[@id=\"event-page\"]/main/div[1]/div[2]/div/section[1]/div[1]/div/div/div[1]/div[2]/div[2]/section/span[{{i}}]",
 							 "fields": {
