@@ -50,7 +50,7 @@ var scrapeMap = {
 					"fbpath": ["/e"],
 					"expanders": [ ],
 					"fields": {
-						 "eid": {	selecters: [ "[@id=\"event-page\"]/@data-event-id"] },
+						 "eid": {	selecters: [ "//*[@id=\"event-page\"]/@data-event-id"] },
 						 "sht": { selecters: [ "/html/head/meta[4]/@content" ] },
 						 "tit": { selecters: [ "/html/head/meta[29]/@content"] },
 						 "lng": { selecters: [ "/html/head/meta[30]/@content"] },

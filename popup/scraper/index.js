@@ -90,7 +90,7 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
  * @param	{string}	value			Input value
  * @return {type}							 Input object
  */
-scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value ) {
+scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value, source ) {
 
 	var _createTagInput = function ___createTagInput(id, name, _value, labelFlag, labelTitle, ctnCssCls){
 		var _class = 'mdl-textfield__input';
@@ -197,13 +197,23 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		return container;
 	}
 
-	var _createDateTimeInput = function __createDateTimeInput(id, name, _value, labelFlag, labelTitle, ctnCssCls, type) {
+	var _createDateTimeInput = function __createDateTimeInput(id, name, _value, labelFlag, labelTitle, ctnCssCls, type, source) {
 		var _class = 'mdl-textfield__input';
 		var _type = type;
 		var container = null;
 		var input = document.createElement('input');
 
+		switch (true) {
+			case source && source == 'eventbride':
+				var arr = _value.split('-');
+				_value = arr.slice(0, arr.length-1).join('-');
+				break;
+			default:
+				break;
+		}
+
 		_value && input.setAttribute('value', _value);
+
 		_class && input.setAttribute('class', _class);
 				id && input.setAttribute('id', id);
 			name && input.setAttribute('name', name);
@@ -218,6 +228,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		var _type = 'hidden';
 		var container = null;
 		var input = document.createElement('input');
+		console.log(id, _value);
 
 		_value && input.setAttribute('value', _value);
 		_class && input.setAttribute('class', _class);
@@ -242,7 +253,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			return _createCheckBoxInput(id, name, value, true, labelTitle, ctnCssCls);
 			break;
 		case type == 'datetime-local':
-			return _createDateTimeInput(id, name, value, false, null, ctnCssCls, type);
+			return _createDateTimeInput(id, name, value, false, null, ctnCssCls, type, source);
 			break;
 		case type == 'hidden':
 			return _createHiddenInput(id, name, value, false, null, ctnCssCls);
@@ -381,7 +392,7 @@ scraperPop.buildHeaderTable = function _buildHeaderTable( skipTitle ) {
  */
 scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scraper ){
 	var tabsCount = this.TABSTITLE.length;
-
+	var source = scraper.patch.items['src'];
 	//div container
 	var tabDivContainer = document.createElement('div');
 	tabDivContainer.setAttribute('class', 'mdl-cell mdl-cell--12-col');
@@ -447,7 +458,8 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 				true,
 				prop.label,
 				prop.cls,
-				value
+				value,
+				source
 			);
 			form.appendChild(field);
 		}
@@ -537,52 +549,88 @@ scraperPop.buildPageEventAdded = function _buildPageEventAdded() {
 	 * @param	{type} showMessage Show reload flag
 	 */
 scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, showMessage ) {
-	// Create containers
-	var arrContainers = this.buildMainContainer();
-	var mainDiv = arrContainers[0];
-	var main = arrContainers[1];
-	var grid = arrContainers[2];
 
-	//Create Header
-	var header = this.buildHeaderTable();
+	if ( scraper && scraper.patch && scraper.patch.items ) {
+		// Create containers
+		var arrContainers = this.buildMainContainer();
+		var mainDiv = arrContainers[0];
+		var main = arrContainers[1];
+		var grid = arrContainers[2];
 
-	//Create Tab Form
-	var tabForms = this.getFormBaseScraperResults(scraper);
+		//Create Header
+		var header = this.buildHeaderTable();
 
-	grid.appendChild(header);
-	if ( showMessage ) {
-		var a = document.createElement('strong');
-		a.setAttribute('style', "font-size:12px; color:white;");
-		var text = document.createTextNode('Recarga la pagina o usa el Context Menu');
+		//Create Tab Form
+		var tabForms = this.getFormBaseScraperResults(scraper);
+
+		grid.appendChild(header);
+		if ( showMessage ) {
+			var a = document.createElement('strong');
+			a.setAttribute('style', "font-size:12px; color:white;");
+			var text = document.createTextNode('Recarga la pagina o usa el Context Menu');
+			var logo = document.createElement("img");
+			var path = chrome.extension.getURL('../../icons/ic_cached_white_24px.svg')
+			logo.setAttribute('src', path);
+			logo.setAttribute('border', '0');
+			a.appendChild(logo);
+			a.appendChild(text);
+			grid.appendChild(a);
+		}
+		componentHandler.upgradeElement(tabForms);
+		grid.appendChild(tabForms);
+		main.appendChild(grid);
+		mainDiv.appendChild(main);
+		componentHandler.upgradeElement(mainDiv);
+		document.body.appendChild(mainDiv);
+
+		//HACK FOR RENDER TABS CORRECTLY WITH MDL
+		var tab = document.getElementById('tabs-ext');
+		componentHandler.downgradeElements(tab);
+		componentHandler.upgradeElement(tab);
+		var divcont = document.getElementsByClassName('mdl-js-textfield');
+		var divcontlength = divcont.length;
+		for (var i = 0; i < divcontlength; i++) {
+			componentHandler.upgradeElement(divcont[i]);
+		}
+		var labelcont = document.getElementsByClassName('mdl-textfield__label');
+		var labelcontlength = labelcont.length;
+		for (var i = 0; i < labelcontlength; i++) {
+			componentHandler.upgradeElement(labelcont[i]);
+		}
+	} else {
+		var arrContainers = this.buildMainContainer();
+		var mainDiv = arrContainers[0];
+		var main = arrContainers[1];
+		var grid = arrContainers[2];
+
+		grid.className = grid.className + ' mdl-grid-event-added';
+
+		//Create Header
+		var header = this.buildHeaderTable( true );
+
+		var message = document.createElement('strong');
+		message.setAttribute('style', "font-size:18px; color:white;");
+		var text = document.createTextNode('La Pagina no ha termiando de cargar');
+
 		var logo = document.createElement("img");
-		var path = chrome.extension.getURL('../../icons/ic_cached_white_24px.svg')
+		var path = chrome.extension.getURL('../../icons/ic_cached_white_48px.svg');
 		logo.setAttribute('src', path);
 		logo.setAttribute('border', '0');
-		a.appendChild(logo);
-		a.appendChild(text);
-		grid.appendChild(a);
-	}
-	componentHandler.upgradeElement(tabForms);
-	grid.appendChild(tabForms);
-	main.appendChild(grid);
-	mainDiv.appendChild(main);
-	componentHandler.upgradeElement(mainDiv);
-	document.body.appendChild(mainDiv);
 
-	//HACK FOR RENDER TABS CORRECTLY WITH MDL
-	var tab = document.getElementById('tabs-ext');
-	componentHandler.downgradeElements(tab);
-	componentHandler.upgradeElement(tab);
-	var divcont = document.getElementsByClassName('mdl-js-textfield');
-	var divcontlength = divcont.length;
-	for (var i = 0; i < divcontlength; i++) {
-		componentHandler.upgradeElement(divcont[i]);
+		message.appendChild(logo);
+		message.appendChild(text);
+		grid.appendChild(header);
+		grid.appendChild(message);
+		main.appendChild(grid);
+		mainDiv.appendChild(main);
+		document.body.innerHTML = "";
+		document.body.className = 'event-added';
+		document.body.appendChild(mainDiv);
+		var html =document.getElementsByTagName('html')[0]
+		html.setAttribute('style', 'height:150px');
+		componentHandler.upgradeElement(html);
 	}
-	var labelcont = document.getElementsByClassName('mdl-textfield__label');
-	var labelcontlength = labelcont.length;
-	for (var i = 0; i < labelcontlength; i++) {
-		componentHandler.upgradeElement(labelcont[i]);
-	}
+
 }
 
 
