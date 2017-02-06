@@ -11,9 +11,8 @@ var scrapeMap = {
 							"eid": {		window: { "propchain": ["location","pathname"] }, match:"(?:/?events/)(\\d+)" },
 						 	"tit": { selecters: [ "//*[@id=\"event_header\"]/div/div[2]/div[1]/div/div/span" ] },
 				 			"img": { selecters: [ "//*[@id=\"event_header\"]/div/div[1]/a/div/img/@src"] },
-							"ini": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/span[1]/span/@content"] },
-						 "hstr": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/span[2]"]},
-						 "hend": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/span[3]"]},
+							"ini": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/@content"] },
+							"end": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/@content"] },
 						 	"ref": { 		window: { "propchain": ["location", "href"]}}
 					}
 				}

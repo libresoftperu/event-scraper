@@ -203,15 +203,35 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		var container = null;
 		var input = document.createElement('input');
 
+		//GET CORRECT VALUE FOR THE DATE BASE ON SOURCE(FB, EVENTBRIDE OR MEETUP)
 		switch (true) {
 			case source && source == 'eventbride':
 				var arr = _value.split('-');
 				_value = arr.slice(0, arr.length-1).join('-');
 				break;
+			case source && source == 'facebook':
+				var arr = _value.split('to');
+				if ( arr.length >= 2 ) {
+					if ( id == 'ini' && arr[0].length) {
+						var _arr = arr[0].trim().split('-');
+						_value = _arr.slice(0, _arr.length-1).join('-');
+					} else if (id == 'end' && arr[1].length ){
+						var _arr = arr[1].trim().split('-');
+						_value = _arr.slice(0, _arr.length-1).join('-');
+					}
+				} else {
+					_value = '';
+				}
+				break;
+			case source && source == 'meetup':
+				if ( _value &&  _value.length ){
+					var arr = _value.split('-');
+					_value = arr.slice(0, arr.length-1).join('-');
+				}
+				break;
 			default:
 				break;
 		}
-
 		_value && input.setAttribute('value', _value);
 
 		_class && input.setAttribute('class', _class);
@@ -228,8 +248,6 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		var _type = 'hidden';
 		var container = null;
 		var input = document.createElement('input');
-		console.log(id, _value);
-
 		_value && input.setAttribute('value', _value);
 		_class && input.setAttribute('class', _class);
 				id && input.setAttribute('id', id);
