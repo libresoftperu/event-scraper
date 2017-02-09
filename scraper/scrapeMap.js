@@ -13,7 +13,9 @@ var scrapeMap = {
 				 			"img": { selecters: [ "//*[@id=\"event_header\"]/div/div[1]/a/div/img/@src"] },
 							"ini": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/@content"] },
 							"end": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[1]/div/table/tbody/tr/td[2]/div/div/div[2]/div[1]/@content"] },
-						 	"ref": { 		window: { "propchain": ["location", "href"]}}
+						 	"ref": { 		window: { "propchain": ["location", "href"]}},
+							"lng": { selecters: [ "//*[@id=\"reaction_units\"]/div/div[1]/div[2]/span" ] },
+							"adr": { selecters: [ "//*[@id=\"event_summary\"]/div/ul/li[2]" ] },
 					}
 				}
 			}

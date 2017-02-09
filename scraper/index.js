@@ -498,29 +498,33 @@ scraper.scrapeFields = function ( fields, base, relation ) {
 scraper.scrapePage = function () {
 
 	var scrape = {};
-	var map = this.scrapeMap.scrapers[scraper.isProfile];
-	var routes = this.scrapeMap.scrapers[scraper.isProfile].routes;
-	var routedscraper = scraper.getRoutedScraper(routes);
-	scraper.runExpanders(routedscraper.expanders);
-	var method = routedscraper.method;
+	if ( this.scrapeMap && this.scrapeMap.scrapers ) {
+		var map = this.scrapeMap.scrapers[scraper.isProfile];
+		var routes = this.scrapeMap.scrapers[scraper.isProfile].routes;
+		var routedscraper = scraper.getRoutedScraper(routes);
+		scraper.runExpanders(routedscraper.expanders);
+		var method = routedscraper.method;
 
-	scrape[method] = {};
-	scrape[method].fbpath = routedscraper.fbpath;
-	scrape[method].scrapedom = scraper.isProfile;
-	scrape[method].scrapever = map.version;
-	scrape[method].scrapestamp = Date.now();
-	scrape[method].items = {};
+		scrape[method] = {};
+		scrape[method].fbpath = routedscraper.fbpath;
+		scrape[method].scrapedom = scraper.isProfile;
+		scrape[method].scrapever = map.version;
+		scrape[method].scrapestamp = Date.now();
+		scrape[method].items = {};
 
-	var fields = routedscraper.fields;
-	if (fields) {
-		scrape[method].items = scraper.scrapeFields(fields);
+		var fields = routedscraper.fields;
+		if (fields) {
+			scrape[method].items = scraper.scrapeFields(fields);
+		}
+
+		// ADD SOURCE TO THE EVENT(FACEBOOK, EVENTBRIDE, ... ETC)
+		scrape[method].items["src"] = scrape[method].scrapedom
+
+		console.log("scrape:",scrape);
+		return scrape;
+	} else {
+		return null;
 	}
-
-	// ADD SOURCE TO THE EVENT(FACEBOOK, EVENTBRIDE, ... ETC)
-	scrape[method].items["src"] = scrape[method].scrapedom
-
-	console.log("scrape:",scrape);
-	return scrape;
 };
 
 /**

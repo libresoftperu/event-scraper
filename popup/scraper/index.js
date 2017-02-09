@@ -1,3 +1,104 @@
+
+/**
+ * Form Helper
+ */
+var formHelperSet = {
+
+	init: function _init(){
+		//DURATION
+		this.setDurationFields();
+		//LAT AND LOG
+		this.setCoordinates();
+	},
+
+	setCoordinates : function _setCoordinates() {
+
+		function status(response) {
+			if (response.status >= 200 && response.status < 300) {
+				return Promise.resolve(response)
+			} else {
+				return Promise.reject(new Error(response.statusText))
+			}
+		}
+
+		function json(response) {
+			return response.json()
+		}
+
+		var addressDom =	document.getElementById('adr');
+		var address = addressDom.value;
+		if ( address && address.length ) {
+			var url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + address;
+			fetch(url)
+			.then(status)
+			.then(json)
+			.then(function(data) {
+				if ( data && data.status == 'OK'  ){
+					console.log('Request succeeded with JSON response', data);
+					if ( data.results ) {
+						if ( data.results.length > 1 ){
+							console.log('Google Maps Request - too many posible locations', data.results);
+						} else {
+							var loc = data.results[0].geometry;
+							if  ( loc && loc.location ){
+								var lat = loc.location.lat;
+								var lng = loc.location.lng;
+								console.log(lat, lng);
+								var _lat = document.getElementById('lat');
+								_lat.value = lat;
+								var _log = document.getElementById('log');
+								_log.value = lng;
+								componentHandler.downgradeElements(_lat);
+								componentHandler.upgradeElement(_lat);
+								componentHandler.downgradeElements(_log);
+								componentHandler.upgradeElement(_log);
+								var parentLat = _lat.parentElement;
+								var parentLog = _log.parentElement;
+								componentHandler.downgradeElements(parentLat);
+								componentHandler.upgradeElement(parentLat);
+								componentHandler.downgradeElements(parentLog);
+								componentHandler.upgradeElement(parentLog);
+							}
+						}
+					} else {
+						console.log('Google Maps Request - failed to ge results from Google API', data);
+					}
+				} else {
+					console.log('Google Maps Request - failed process data', data);
+				}
+			}).catch(function(error) {
+				console.log('Google Maps Request - failed to connect', error);
+			});
+		}
+	},
+
+	setDurationFields : function _setCalculatesFields() {
+			//DURATION
+			var iniDom = document.getElementById('ini');
+			var endDom = document.getElementById('end');
+			var ini = new Date(iniDom.value);
+			var end = new Date(endDom.value);
+			if ( Object.prototype.toString.call(ini) === "[object Date]"	&&
+					 Object.prototype.toString.call(end) === "[object Date]") {
+
+				if ( !isNaN( ini.getTime() ) &&	!isNaN( end.getTime() ) ) {
+					var dif = ini.getTime() - end.getTime();
+					var seconds = dif / 1000;
+					var seconds_btw_date = Math.abs(seconds);
+					var dur = document.getElementById('dur')
+					dur.value = parseInt(seconds_btw_date);
+					componentHandler.downgradeElements(dur);
+					componentHandler.upgradeElement(dur);
+				}
+			}
+	}
+
+};
+
+
+/**
+ *	Main class, build and handle form
+ */
 var scraperPop={};
 
 scraperPop.controlbutton = null;
@@ -136,6 +237,17 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			true && input.setAttribute('rows', '3');
 
 		if ( _value ){
+			//CLEAN DATA FROM SCRAPPER
+			switch (true) {
+				case source == 'facebook':
+					_value = _value.replace('pin', '');
+					_value = _value.replace('Mostrar mapa', '');
+					_value = _value.replace('Show map', '');
+					break;
+				default:
+					break;
+			}
+
 			var value = document.createTextNode(_value);
 			input.appendChild(value);
 		}
@@ -151,7 +263,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		return container;
 	}
 
-	var _createTextInput = function __createTextInput(id, name, _value, labelFlag, labelTitle, ctnCssCls){
+	var _createTextInput = function __createTextInput(id, name, _value, labelFlag, labelTitle, ctnCssCls) {
 		var _class = 'mdl-textfield__input';
 		var _type = 'text';
 		var container = null;
@@ -171,6 +283,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		} else {
 			container = input;
 		}
+
 		return container;
 	}
 
@@ -224,7 +337,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 				}
 				break;
 			case source && source == 'meetup':
-				if ( _value &&  _value.length ){
+				if ( _value &&	_value.length ){
 					var arr = _value.split('-');
 					_value = arr.slice(0, arr.length-1).join('-');
 				}
@@ -262,7 +375,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			return _createTextInput(id, name, value, true, labelTitle, ctnCssCls);
 			break;
 		case type == 'textarea':
-			return _createTextArea(id, name, value, true, labelTitle, ctnCssCls);
+			return _createTextArea(id, name, value, true, labelTitle, ctnCssCls, source);
 			break;
 		case type == 'tag':
 			return _createTagInput(id, name, value, true, labelTitle, ctnCssCls);
@@ -295,47 +408,6 @@ scraperPop.buildTextFieldContainer = function _buildTextFieldContainerfunction (
 	div.setAttribute('class', _class);
 	return div;
 }
-
-/**
-	* buildMessage - Build error message box
-	* @param	{string} title Custom title on the box
-	* @param	{string} msg Custom message on the box
-	*/
-scraperPop.buildMessage = function _buildMessage( title, msg, type ) {
-	var _type = null;
-	var arrTypes = [
-		'info',
-		'error',
-		'warning',
-		'success'
-	];
-
-	if ( arrTypes.indexOf(type) < 0 || !type) {
-		_type = 'warning';
-	} else {
-		_type = type;
-	}
-
-	var _title = title || this.CUSTOM_TITLE;
-	var _message = msg || this.CUSTOM_MESSAGE;
-
-	var div = document.createElement("div");
-
-	var h3 = document.createElement("h3");
-	h3.setAttribute("style", "color:white;");
-	var textnode = document.createTextNode(_title);
-	h3.appendChild(textnode);
-
-	var message = document.createElement("p");
-	textnode = document.createTextNode(_message);
-	message.appendChild(textnode);
-
-	div.setAttribute('class', 'message ' + _type);
-	div.appendChild(h3);
-	div.appendChild(message);
-	return div;
-}
-
 
 /**
  * buildMainContainer - Build the main container's extension
@@ -504,6 +576,9 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 		submitButton.setAttribute('disabled', true);
 		var data = scraperPop.getFormsData();
 		if ( scraperPop.validate( data ) ){
+
+			//TODO FILTER DATA FROM EVENT
+
 			var resultPromise = scraperPop.saveEvent(data);
 			resultPromise.then( function(){
 				scraperPop.buildPageEventAdded();
@@ -564,9 +639,8 @@ scraperPop.buildPageEventAdded = function _buildPageEventAdded() {
 	 * scraperPop - Build the success page
 	 *
 	 * @param	{type} scraper		 Scrapper results
-	 * @param	{type} showMessage Show reload flag
 	 */
-scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, showMessage ) {
+scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper ) {
 
 	if ( scraper && scraper.patch && scraper.patch.items ) {
 		// Create containers
@@ -582,24 +656,16 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 		var tabForms = this.getFormBaseScraperResults(scraper);
 
 		grid.appendChild(header);
-		if ( showMessage ) {
-			var a = document.createElement('strong');
-			a.setAttribute('style', "font-size:12px; color:white;");
-			var text = document.createTextNode('Recarga la pagina o usa el Context Menu');
-			var logo = document.createElement("img");
-			var path = chrome.extension.getURL('../../icons/ic_cached_white_24px.svg')
-			logo.setAttribute('src', path);
-			logo.setAttribute('border', '0');
-			a.appendChild(logo);
-			a.appendChild(text);
-			grid.appendChild(a);
-		}
+
 		componentHandler.upgradeElement(tabForms);
 		grid.appendChild(tabForms);
 		main.appendChild(grid);
 		mainDiv.appendChild(main);
 		componentHandler.upgradeElement(mainDiv);
 		document.body.appendChild(mainDiv);
+
+		//SET VALUES BASE IN OTHER FIELDS
+		formHelperSet.init();
 
 		//HACK FOR RENDER TABS CORRECTLY WITH MDL
 		var tab = document.getElementById('tabs-ext');
@@ -615,6 +681,7 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 		for (var i = 0; i < labelcontlength; i++) {
 			componentHandler.upgradeElement(labelcont[i]);
 		}
+
 	} else {
 		var arrContainers = this.buildMainContainer();
 		var mainDiv = arrContainers[0];
@@ -648,7 +715,31 @@ scraperPop.buildSccrapperPageForm = function _buildSccrapperPageForm( scraper, s
 		html.setAttribute('style', 'height:150px');
 		componentHandler.upgradeElement(html);
 	}
+}
 
+
+/**
+ * _setCalculatesFields - Set the fields on the form base on the current form's values
+ */
+scraperPop.setCalculatesFields = function _setCalculatesFields(){
+		//DURATION
+		var iniDom = document.getElementById('ini');
+		var endDom = document.getElementById('end');
+		var ini = new Date(iniDom.value);
+		var end = new Date(endDom.value);
+		if ( Object.prototype.toString.call(ini) === "[object Date]"	&&
+				 Object.prototype.toString.call(end) === "[object Date]") {
+
+			if ( !isNaN( ini.getTime() ) &&	!isNaN( end.getTime() ) ) {
+				var dif = ini.getTime() - end.getTime();
+				var seconds = dif / 1000;
+				var seconds_btw_date = Math.abs(seconds);
+				var dur = document.getElementById('dur')
+				dur.value = parseInt(seconds_btw_date);
+				componentHandler.downgradeElements(dur);
+				componentHandler.upgradeElement(dur);
+			}
+		}
 }
 
 
@@ -725,9 +816,9 @@ window.addEventListener('DOMContentLoaded', function() {
 	chrome.tabs.query( { active: true, currentWindow: true }, function ( tabs ) {
 		chrome.tabs.sendMessage( tabs[0].id, true, function(res){
 				if ( res ) {
-					scraperPop.buildSccrapperPageForm(res.results.scraper, false);
+					scraperPop.buildSccrapperPageForm(res.results.scraper);
 				} else {
-					scraperPop.buildSccrapperPageForm(null, true);
+					scraperPop.buildSccrapperPageForm(null);
 				}
 		});
 	});
