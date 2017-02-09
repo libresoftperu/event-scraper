@@ -8,7 +8,8 @@ var scraper = {};
 scraper.ptypeEnum = {
 	FACEBOOK : "facebook",
 	MEETUP : "meetup",
-	EVENTBRIDE : "eventbride"
+	EVENTBRIDE : "eventbride",
+	ALLEVENTS: "allevents"
 };
 
 scraper.isProfile = null;
@@ -73,6 +74,14 @@ scraper.getProfileType = function () {
 					retVal = this.ptypeEnum.EVENTBRIDE;
 			}
 			return retVal;
+
+		case "allevents.in":
+			switch ( true ) {
+				case !!( pathname.match("/lima/") ) :
+					retVal = this.ptypeEnum.ALLEVENTS;
+			}
+			return retVal;
+			break;
 
 		default:
 			return null;

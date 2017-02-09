@@ -23,7 +23,9 @@
 		"https://*.eventbrite.es/*",
 		"http://*.eventbrite.es/*",
 		"https://*.eventbrite.com/*",
-		"http://*.eventbrite.com/*"
+		"http://*.eventbrite.com/*",
+		"https://*.allevents.in/*",
+		"http://*.allevents.in/*"
 	],
 	"background": {
 		"persistent":false,
@@ -41,7 +43,9 @@
 				"https://www.eventbrite.es/e/*",
 				"http://www.eventbrite.es/e/*",
 				"https://www.eventbrite.com/e/*",
-				"http://www.eventbrite.com/e/*"
+				"http://www.eventbrite.com/e/*",
+				"https://allevents.in/lima/*",
+				"http://allevents.in/lima/*"
 			],
 			"js": ["scraper/index.js"]
 		}

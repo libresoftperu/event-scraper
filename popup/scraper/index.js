@@ -11,6 +11,62 @@ var formHelperSet = {
 		this.setCoordinates();
 	},
 
+	setAddress: function _setAddress( _value, source ) {
+		if ( _value ){
+			//CLEAN DATA FROM SCRAPPER
+			switch (true) {
+				case source == 'facebook':
+					_value = _value.replace('pin', '');
+					_value = _value.replace('Mostrar mapa', '');
+					_value = _value.replace('Show map', '');
+					break;
+				case source == "meetup":
+					_value = _value.replace('(mapa)', '');
+					_value = _value.replace('(map)', '');
+					break;
+				case source == "eventbride":
+					_value = _value.replace('Ver mapa', '');
+					_value = _value.replace('Show map', '');
+					break;
+				default:
+					break;
+			}
+		}
+		return _value
+	},
+
+	setDatesInputs: function _setDatesInputs(_value , id, source) {
+		switch (true) {
+			case source && source == 'eventbride':
+				var arr = _value.split('-');
+				_value = arr.slice(0, arr.length-1).join('-');
+				break;
+			case source && source == 'facebook':
+				var arr = _value.split('to');
+				if ( arr.length >= 2 ) {
+					if ( id == 'ini' && arr[0].length) {
+						var _arr = arr[0].trim().split('-');
+						_value = _arr.slice(0, _arr.length-1).join('-');
+					} else if (id == 'end' && arr[1].length ){
+						var _arr = arr[1].trim().split('-');
+						_value = _arr.slice(0, _arr.length-1).join('-');
+					}
+				} else {
+					_value = '';
+				}
+				break;
+			case source && source == 'meetup':
+				if ( _value &&	_value.length ){
+					var arr = _value.split('-');
+					_value = arr.slice(0, arr.length-1).join('-');
+				}
+				break;
+			default:
+				break;
+		}
+		return _value;
+	},
+
 	setCoordinates : function _setCoordinates() {
 
 		function status(response) {
@@ -94,7 +150,6 @@ var formHelperSet = {
 	}
 
 };
-
 
 /**
  *	Main class, build and handle form
@@ -224,7 +279,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		return container;
 	}
 
-	var _createTextArea = function __createTextArea(id, name, _value, labelFlag, labelTitle, ctnCssCls){
+	var _createTextArea = function __createTextArea(id, name, _value, labelFlag, labelTitle, ctnCssCls, source){
 		var _class = 'mdl-textfield__input';
 		var _type = 'textarea';
 		var container = null;
@@ -236,18 +291,8 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 			true && input.setAttribute('type', 'text');
 			true && input.setAttribute('rows', '3');
 
+		_value = formHelperSet.setAddress( _value, source );
 		if ( _value ){
-			//CLEAN DATA FROM SCRAPPER
-			switch (true) {
-				case source == 'facebook':
-					_value = _value.replace('pin', '');
-					_value = _value.replace('Mostrar mapa', '');
-					_value = _value.replace('Show map', '');
-					break;
-				default:
-					break;
-			}
-
 			var value = document.createTextNode(_value);
 			input.appendChild(value);
 		}
@@ -317,36 +362,9 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 		var input = document.createElement('input');
 
 		//GET CORRECT VALUE FOR THE DATE BASE ON SOURCE(FB, EVENTBRIDE OR MEETUP)
-		switch (true) {
-			case source && source == 'eventbride':
-				var arr = _value.split('-');
-				_value = arr.slice(0, arr.length-1).join('-');
-				break;
-			case source && source == 'facebook':
-				var arr = _value.split('to');
-				if ( arr.length >= 2 ) {
-					if ( id == 'ini' && arr[0].length) {
-						var _arr = arr[0].trim().split('-');
-						_value = _arr.slice(0, _arr.length-1).join('-');
-					} else if (id == 'end' && arr[1].length ){
-						var _arr = arr[1].trim().split('-');
-						_value = _arr.slice(0, _arr.length-1).join('-');
-					}
-				} else {
-					_value = '';
-				}
-				break;
-			case source && source == 'meetup':
-				if ( _value &&	_value.length ){
-					var arr = _value.split('-');
-					_value = arr.slice(0, arr.length-1).join('-');
-				}
-				break;
-			default:
-				break;
-		}
-		_value && input.setAttribute('value', _value);
+		_value = formHelperSet.setDatesInputs( _value, id, source);
 
+		_value && input.setAttribute('value', _value);
 		_class && input.setAttribute('class', _class);
 				id && input.setAttribute('id', id);
 			name && input.setAttribute('name', name);

@@ -39,6 +39,7 @@ var scrapeMap = {
 						 "ini": { selecters: [ "//*[@id=\"event-start-time\"]/@datetime"] },
 						 "ref": { 		window: { "propchain": ["location", "href"] } },
 						 "lng": { selecters: [ "//*[@id=\"event-description-wrap\"]"] },
+						 "adr": { selecters: [ "//*[@id=\"event-where\"]"] }
 					}
 				}
 			}
@@ -68,7 +69,8 @@ var scrapeMap = {
 							 "fields": {
 									"tag": { selecters: ["/a/span"] } /*,{ "name": "endorsed", selecters: ["/span/a"]}*/
 								}
-					 	 }
+					 	 },
+						 "adr": { selecters: ["//*[@id=\"event-page\"]/main/div[1]/div[2]/div/section[1]/div[1]/div/div/div[2]/div/div[2]"] },
 					}
 				}
 			}
