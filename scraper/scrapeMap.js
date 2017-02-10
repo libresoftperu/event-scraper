@@ -96,9 +96,7 @@ var scrapeMap = {
 							 "fields": {
 									"tag": { selecters: ["/"] }
 								}
-					 	 },
-
-						 // //*[@id="event-detail-fade"]/div[3]/div[2]/div[7]/div/a[2]
+					 	 }
 					}
 				}
 			}

@@ -28,7 +28,7 @@ var eventSchema = {
 		"tab3": {
 			"cty": { label:"Ciudad", id:"cty", name: "cty", type: "text"},
 			"lct": { label:"location", id:"lct", name: "lct", type: "text", cls: "shared_space_fields_left"},
-			"lcl": { label:"locale", id:"lcl", name: "lcl", type: "text", cls: "shared_space_fields_right"},
+			"lcl": { label:"locale", id:"lcl", name: "lcl", type: "text", cls: "shared_space_fields_right", datalist: ['es-PE', 'en-US']},
 			"lat": { label: "Latitud", id: "lat", name: "lat", type: "number", cls: "shared_space_fields_left"},
 			"log": { label: "Longitud", id: "log", name: "log", type: "number", cls: "shared_space_fields_right"},
 			"adr": { label: "Dirección", id: "adr", name: "adr", type: "textarea" }

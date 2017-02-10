@@ -9,6 +9,27 @@ var formHelperSet = {
 		this.setDurationFields();
 		//LAT AND LOG
 		this.setCoordinates();
+		//LOCALE
+		this.setLocale();
+		//PRICE
+		this.setPrice();
+	},
+
+	setPrice: function _setPrice() {
+		var price = document.getElementById('prc');
+		var pricev = parseFloat(price.value);
+		if ( isNaN(pricev) ) {
+			pricev = 0;
+		}
+		price.setAttribute('value', pricev);
+	},
+
+	setLocale: function _setLocale( ) {
+		var locale = document.getElementById('lcl');
+		var localev = locale.value;
+		//REPLACE PE_ES TO PE-ES
+		localev = localev.replace('_', '-');
+		locale.setAttribute('value', localev);
 	},
 
 	setAddress: function _setAddress( _value, source ) {
@@ -242,15 +263,16 @@ scraperPop.buildLabelTextField = function _buildLabelTextField( title, forE, cls
 /**
  * buildTextField - Build a input field base
  *
- * @param	{string}	type			 Input Type [text, number, email ... etc]
- * @param	{string}	id				 Input ID
- * @param	{string}	name			 Input name
+ * @param	{string}	type			 		Input Type [text, number, email ... etc]
+ * @param	{string}	id				 		Input ID
+ * @param	{string}	name			 		Input name
  * @param	{boolean} containerFlag	Div container Flag
- * @param	{string}	clss			 Any addionatl CSS clases container
- * @param	{string}	value			Input value
- * @return {type}							 Input object
+ * @param	{string}	clss			 		Any addionatl CSS clases container
+ * @param	{string}	value			 		Input value
+ * @param	{array}		datalist			Datalist array
+ * @return {type}							 		Input object
  */
-scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value, source ) {
+scraperPop.buildTextField = function _buildTextField( type, id, name, containerFlag, labelFlag, labelTitle, ctnCssCls, value, source, datalist ) {
 
 	var _createTagInput = function ___createTagInput(id, name, _value, labelFlag, labelTitle, ctnCssCls){
 		var _class = 'mdl-textfield__input';
@@ -326,6 +348,21 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 
 		container = scraperPop.buildTextFieldContainer(ctnCssCls);
 		container.appendChild(input);
+
+		if ( datalist && datalist.length ){
+			var datalistLength = datalist.length;
+			var _datalist = document.createElement('datalist');
+			var datalistId = id + '_datalist';
+			id && _datalist.setAttribute('id', datalistId);
+			for (var i = 0; i < datalistLength; i++) {
+				var option = document.createElement('option');
+				option.setAttribute('value', datalist[i]);
+				_datalist.appendChild(option);
+				container.appendChild(_datalist);
+			}
+			input.setAttribute('list', datalistId)
+		}
+
 		if ( labelFlag ) {
 			var label = scraperPop.buildLabelTextField(labelTitle, name, null, _type);
 			container.appendChild(label);
@@ -394,7 +431,7 @@ scraperPop.buildTextField = function _buildTextField( type, id, name, containerF
 
 	switch (true) {
 		case type == 'text':
-			return _createTextInput(id, name, value, true, labelTitle, ctnCssCls);
+			return _createTextInput(id, name, value, true, labelTitle, ctnCssCls, datalist);
 			break;
 		case type == 'textarea':
 			return _createTextArea(id, name, value, true, labelTitle, ctnCssCls, source);
@@ -571,7 +608,8 @@ scraperPop.getFormBaseScraperResults = function _getFormBaseScraperResults( scra
 				prop.label,
 				prop.cls,
 				value,
-				source
+				source,
+				prop.datalist
 			);
 			form.appendChild(field);
 		}
