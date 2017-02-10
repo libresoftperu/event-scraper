@@ -74,6 +74,25 @@ var scrapeMap = {
 					}
 				}
 			}
+		},
+		"allevents" : {
+			"version": "0.1.0",
+			"routes": {
+				"/lima/":{
+					"method": "patch",
+					"fbpath": ["/lima"],
+					"expanders": [ ],
+					"fields": {
+						 "sht": { selecters: [ "/html/head/meta[16]/@content" ] },
+						 "tit": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/h1"] },
+						 "lng": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[1]/div[3]"] },
+						 "img": { selecters: [ "/html/head/meta[8]/@content"] },
+						 "ini": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[2]"] },
+						 "end": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[3]"] },
+						 "adr": { selecters: ["//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[2]/span[2]"] },
+					}
+				}
+			}
 		}
 	}
 };

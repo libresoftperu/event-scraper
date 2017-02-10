@@ -48,7 +48,7 @@ scraper.init = function() {
 	* @return {retVal}	Profile Type (facebook, meetup or eventbrite, null otherwise)
 	*/
 scraper.getProfileType = function () {
-	var rx = /facebook.com|meetup.com|eventbrite.es|eventbrite.com/;
+	var rx = /facebook.com|meetup.com|eventbrite.es|eventbrite.com|allevents.in/;
 	var retVal = null;
 	var pathname = window.location.pathname;
 	switch ( window.location.host.match(rx)[0] ) {
