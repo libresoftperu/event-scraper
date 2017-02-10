@@ -84,12 +84,21 @@ var scrapeMap = {
 					"expanders": [ ],
 					"fields": {
 						 "sht": { selecters: [ "/html/head/meta[16]/@content" ] },
-						 "tit": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/h1"] },
-						 "lng": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[1]/div[3]"] },
+						 "ref": { 		window: { "propchain": ["location", "href"] } },
+						 "tit": { selecters: [ "/html/head/meta[7]/@content"] },
+						 "lng": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[1]/div[3]", "//*[@id=\"event-detail-fade\"]/div[3]/div[1]/div[1]/div[3]"] },
 						 "img": { selecters: [ "/html/head/meta[8]/@content"] },
-						 "ini": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[2]"] },
-						 "end": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[3]"] },
-						 "adr": { selecters: ["//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[2]/span[2]"] },
+						 "ini": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[2]/@content", "//*[@id=\"event-detail-fade\"]/div[2]/div[3]/ul/li[1]/span[2]/@content"] },
+						 "end": { selecters: [ "//*[@id=\"event-detail-fade\"]/div[1]/div[3]/ul/li[1]/span[3]/@content", "//*[@id=\"event-detail-fade\"]/div[2]/div[3]/ul/li[1]/span[3]/@content"] },
+						 "adr": { selecters: ["//*[@id=\"event-detail-fade\"]/div[2]/div[1]/div[2]/span[2]", "//*[@id=\"event-detail-fade\"]/div[3]/div[1]/div[2]/span[2]"] },
+						 "tag": {
+							 "base": "//*[@id=\"event-detail-fade\"]/div[3]/div[2]/div[7]/div/a[{{i}}]",
+							 "fields": {
+									"tag": { selecters: ["/"] }
+								}
+					 	 },
+
+						 // //*[@id="event-detail-fade"]/div[3]/div[2]/div[7]/div/a[2]
 					}
 				}
 			}

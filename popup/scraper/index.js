@@ -61,6 +61,10 @@ var formHelperSet = {
 					_value = arr.slice(0, arr.length-1).join('-');
 				}
 				break;
+			case source && source == 'allevents':
+				if ( _value &&	_value.length ){
+					_value = _value.replace('Z', '');
+				}
 			default:
 				break;
 		}
